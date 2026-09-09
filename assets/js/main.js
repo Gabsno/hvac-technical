@@ -55,15 +55,30 @@
   var rows = document.querySelectorAll(".svc__row");
   if (rows.length) {
     var frameImgs = document.querySelectorAll(".svc__frame img");
+    // images for the closed rows carry data-src so they are not fetched on load
+    function promote(img) {
+      if (!img || !img.getAttribute("data-src")) return;
+      var ss = img.getAttribute("data-srcset");
+      if (ss) { img.setAttribute("srcset", ss); img.removeAttribute("data-srcset"); }
+      img.setAttribute("src", img.getAttribute("data-src"));
+      img.removeAttribute("data-src");
+    }
     function openRow(row) {
       rows.forEach(function (r) {
         var on = r === row;
         r.setAttribute("aria-expanded", on ? "true" : "false");
         var panel = document.getElementById(r.getAttribute("aria-controls"));
-        if (panel) panel.classList.toggle("is-open", on);
+        if (panel) {
+          panel.classList.toggle("is-open", on);
+          if (on) panel.querySelectorAll("img[data-src]").forEach(promote);
+        }
       });
       var key = row.getAttribute("data-img");
-      frameImgs.forEach(function (img) { img.classList.toggle("is-on", img.getAttribute("data-key") === key); });
+      frameImgs.forEach(function (img) {
+        var on = img.getAttribute("data-key") === key;
+        if (on) promote(img);
+        img.classList.toggle("is-on", on);
+      });
     }
     rows.forEach(function (row) {
       row.addEventListener("click", function () { openRow(row); });

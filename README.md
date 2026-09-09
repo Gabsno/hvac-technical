@@ -59,6 +59,25 @@ https://gabsno.github.io/hvac-technical/ (repo Gabsno/hvac-technical, deploys fr
 - The wall-mounted outdoor unit and the condenser bank are Unsplash photos; the
   rest of the photography is the client team from the profile PDF.
 
+## Performance
+
+All photography is WebP, sized to its actual display context, with a 700 / 950 / full
+ladder in `srcset` and a `sizes` attribute measured from the real rendered width at
+1440px and 390px. The five closed rows of the services accordion carry `data-src` and are
+fetched only when their row is opened. Originals live in `assets/img/_original/` and are
+not served.
+
+Measured in headless Edge, cold cache, before and after:
+
+| | initial load | full read |
+|---|---|---|
+| Home, mobile 390px DPR2 | 1343 KB to **256 KB** | 3130 KB to **837 KB** |
+| Home, desktop 1440px | 1462 KB to **406 KB** | 3130 KB to **905 KB** |
+| All five pages, mobile | 2843 KB to **850 KB** | 7724 KB to **2425 KB** |
+
+Regenerate with the scripts in the scratchpad (`optimize.js`, `responsive.js`), which drive
+Chromium's canvas encoder: neither ImageMagick nor sharp is installed on this machine.
+
 ## Content sources
 
 Everything factual comes from the profile PDF: intro letter (Mohammed Abdulai,
@@ -68,6 +87,13 @@ clients, phones (0599333103 / 0256701135), email, and address.
 
 The v2 Next.js site's invented projects, stats and brand-partner claims were NOT
 carried over.
+
+## Search and sharing
+
+`sitemap.xml`, `robots.txt`, `favicon.ico`, `apple-touch-icon.png` and a 1200x630
+`assets/img/og.jpg` share card are in place. The card is generated from the real logo and
+crew photo by `brandassets.js`. Sitemap and canonical URLs point at hvactechnicalgh.com,
+so they are correct the moment DNS moves.
 
 ## Things to confirm with the client before go-live
 
@@ -80,7 +106,8 @@ carried over.
    Confirm which are live.
 4. **Founding year** - the profile says "nearly a decade"; the site uses "~10 yrs"
    and avoids a specific year. Add one if they want it.
-5. **Client logos** are cropped from the PDF (white backgrounds, ~150-300 px). Ask
+5. **Client logos** are cropped from the PDF. Ask the client for original logo files for a
+   crisper wall.
    the client for original logo files for a crisper wall.
 6. **Quote form** opens WhatsApp with the message pre-filled (no backend needed).
    If they prefer email delivery, point the form at Formspree/Resend.
