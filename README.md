@@ -48,7 +48,9 @@ https://gabsno.github.io/hvac-technical/ (repo Gabsno/hvac-technical, deploys fr
   (progressive, `@supports animation-timeline`), IntersectionObserver fallback,
   magnetic primary buttons, cross-page View Transitions. All gated by
   `prefers-reduced-motion`.
-- Icons: Phosphor (regular) via unpkg CDN. Fonts: Google Fonts.
+- Icons: the five Phosphor glyphs actually used (arrow-right, whatsapp-logo, plus, x,
+  list) are inlined as SVG. No icon CDN, no webfont. They size from the `font-size` of
+  their container via `.icon { width: 1em; height: 1em }`. Fonts: Google Fonts.
 - v3.2 energy layer: rotating headline word, light-blue/orange glow and drifting
   particle canvas over the hero, pointer parallax, count-up numbers, the values
   section as a single orange colour block, a scroll-driven horizontal process pan
@@ -74,6 +76,10 @@ Measured in headless Edge, cold cache, before and after:
 | Home, mobile 390px DPR2 | 1343 KB to **256 KB** | 3130 KB to **837 KB** |
 | Home, desktop 1440px | 1462 KB to **406 KB** | 3130 KB to **905 KB** |
 | All five pages, mobile | 2843 KB to **850 KB** | 7724 KB to **2425 KB** |
+
+Dropping the unpkg Phosphor stylesheet and webfont removed a further 220 KB and one
+third-party origin from every page, for 2 KB of inline SVG (measured on the wire: home
+page on mobile went from 540 KB to 322 KB including Google Fonts).
 
 Regenerate with the scripts in the scratchpad (`optimize.js`, `responsive.js`), which drive
 Chromium's canvas encoder: neither ImageMagick nor sharp is installed on this machine.
