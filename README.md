@@ -31,15 +31,25 @@ npx -y serve -l 5185 .
 then open http://localhost:5185. (`serve` strips `.html` from URLs in preview; on a
 normal host the `.html` links work as-is.)
 
-## Design
+## Live
 
-- Palette taken straight from the wordmark: navy `#1e4e7e`, light blue `#b9d3ea`,
-  orange `#e8782a`, grey `#8c93a0`.
+https://gabsno.github.io/hvac-technical/ (repo Gabsno/hvac-technical, deploys from main via GitHub Actions)
+
+## Design (v3.1, dark-first)
+
+- Whole site lives in the brand navy (`#071426` / `#0b1e33`). Light blue `#b9d3ea` carries
+  emphasis, orange `#e8782a` is reserved for the primary action. One theme, no inversion.
 - Type: Outfit (display, mirrors the rounded geometric "hvac" letterforms), Manrope
   (body), JetBrains Mono (micro-labels). Loaded from Google Fonts.
 - The three-arc motif in the hero and CTA bands echoes the logo's swoosh.
-- Motion: IntersectionObserver reveals, slow hero drift, hover lifts. All gated by
+- Layout families on the home page: kinetic-type hero, logo marquee, offset manifesto,
+  accordion services with a sticky image, sticky-heading process, five-cell bento,
+  full-bleed photo band, the H-V-A-C acrostic, CTA footer.
+- Motion: line-mask hero reveal, CSS scroll-driven parallax and step reveals
+  (progressive, `@supports animation-timeline`), IntersectionObserver fallback,
+  magnetic primary buttons, cross-page View Transitions. All gated by
   `prefers-reduced-motion`.
+- Icons: Phosphor (regular) via unpkg CDN. Fonts: Google Fonts.
 
 ## Content sources
 
