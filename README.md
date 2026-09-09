@@ -50,7 +50,11 @@ https://gabsno.github.io/hvac-technical/ (repo Gabsno/hvac-technical, deploys fr
   `prefers-reduced-motion`.
 - Icons: the five Phosphor glyphs actually used (arrow-right, whatsapp-logo, plus, x,
   list) are inlined as SVG. No icon CDN, no webfont. They size from the `font-size` of
-  their container via `.icon { width: 1em; height: 1em }`. Fonts: Google Fonts.
+  their container via `.icon { width: 1em; height: 1em }`.
+- Fonts: Outfit and Manrope are self-hosted as variable woff2 in `assets/fonts/`, latin
+  and latin-ext subsets, declared over their real weight ranges (500-700 and 400-700) so
+  every weight is a true instance rather than synthetic bold. The two latin files are
+  preloaded. No Google Fonts request, so no visitor IP reaches Google.
 - v3.2 energy layer: rotating headline word, light-blue/orange glow and drifting
   particle canvas over the hero, pointer parallax, count-up numbers, the values
   section as a single orange colour block, a scroll-driven horizontal process pan
@@ -69,7 +73,18 @@ ladder in `srcset` and a `sizes` attribute measured from the real rendered width
 fetched only when their row is opened. Originals live in `assets/img/_original/` and are
 not served.
 
-Measured in headless Edge, cold cache, before and after:
+Measured in headless Edge, cold cache, counting every response body including
+third-party. Home page on mobile (390px, DPR2):
+
+| | initial load | full read |
+|---|---|---|
+| Start of the session | 1626 KB | 3409 KB |
+| Now | **310 KB** | **888 KB** |
+| | -81% | -74% |
+
+Third-party origins went from four (unpkg, fonts.googleapis, fonts.gstatic,
+images.unsplash) to none. The only remaining external request anywhere on the site is the
+Google Maps iframe on the contact page.
 
 | | initial load | full read |
 |---|---|---|
@@ -77,9 +92,10 @@ Measured in headless Edge, cold cache, before and after:
 | Home, desktop 1440px | 1462 KB to **406 KB** | 3130 KB to **905 KB** |
 | All five pages, mobile | 2843 KB to **850 KB** | 7724 KB to **2425 KB** |
 
-Dropping the unpkg Phosphor stylesheet and webfont removed a further 220 KB and one
-third-party origin from every page, for 2 KB of inline SVG (measured on the wire: home
-page on mobile went from 540 KB to 322 KB including Google Fonts).
+The unpkg icon webfont was 220 KB for five glyphs. Self-hosting the fonts saved only about
+13 KB of bytes, but removed two third-party origins from the critical path: the browser no
+longer does DNS and TLS to fonts.googleapis.com, waits for a stylesheet, then does DNS and
+TLS again to fonts.gstatic.com before a single glyph arrives.
 
 Regenerate with the scripts in the scratchpad (`optimize.js`, `responsive.js`), which drive
 Chromium's canvas encoder: neither ImageMagick nor sharp is installed on this machine.
