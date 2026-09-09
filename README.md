@@ -35,7 +35,7 @@ normal host the `.html` links work as-is.)
 
 https://gabsno.github.io/hvac-technical/ (repo Gabsno/hvac-technical, deploys from main via GitHub Actions)
 
-## Design (v3.1, dark-first)
+## Design (v3.2, dark-first)
 
 - Whole site lives in the brand navy (`#071426` / `#0b1e33`). Light blue `#b9d3ea` carries
   emphasis, orange `#e8782a` is reserved for the primary action. One theme, no inversion.
@@ -49,6 +49,15 @@ https://gabsno.github.io/hvac-technical/ (repo Gabsno/hvac-technical, deploys fr
   magnetic primary buttons, cross-page View Transitions. All gated by
   `prefers-reduced-motion`.
 - Icons: Phosphor (regular) via unpkg CDN. Fonts: Google Fonts.
+- v3.2 energy layer: rotating headline word, light-blue/orange glow and drifting
+  particle canvas over the hero, pointer parallax, count-up numbers, the values
+  section as a single orange colour block, a scroll-driven horizontal process pan
+  (desktop, Chromium/Safari 26+; vertical stack elsewhere), pointer spotlight on
+  tiles and cards, clip-path wipe reveals on large images.
+- Logo: `assets/img/logo-dark.png` is the wordmark recoloured for navy backgrounds
+  (white letters, original orange and light-blue arcs). `logo.png` is the source.
+- The wall-mounted outdoor unit and the condenser bank are Unsplash photos; the
+  rest of the photography is the client team from the profile PDF.
 
 ## Content sources
 
