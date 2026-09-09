@@ -1,0 +1,76 @@
+# HVAC Technical Services - website v3
+
+Full rebuild of hvactechnicalgh.com, built overnight 9 Sep 2026 from the client's
+company profile PDF (`../Reference/HVAC company prof_1_updt.pdf`), the live site,
+and the earlier competitive research in `../research/`.
+
+## Stack
+
+Plain HTML + CSS + JS. No build step, no dependencies, no `node_modules`.
+Open `index.html` in a browser, or drop the folder on any static host
+(GitHub Pages, Netlify, cPanel, Vercel). Same deployment shape as Yakuver.
+
+```
+site-v3/
+  index.html        Home
+  about.html        About (Technical Director's letter, overview, vision/mission, values, standards)
+  services.html     6 service lines + scope of service areas + FAQ
+  work.html         Client logo wall, sector breakdown, on-site photo gallery
+  contact.html      Contact details, WhatsApp quote form, Google Maps embed
+  assets/css/main.css
+  assets/js/main.js
+  assets/img/       Team photos extracted from the profile PDF, logo, favicon
+  assets/img/clients/  12 client logos cropped from the profile PDF at 300 DPI
+```
+
+## Preview locally
+
+```bash
+npx -y serve -l 5185 .
+```
+then open http://localhost:5185. (`serve` strips `.html` from URLs in preview; on a
+normal host the `.html` links work as-is.)
+
+## Design
+
+- Palette taken straight from the wordmark: navy `#1e4e7e`, light blue `#b9d3ea`,
+  orange `#e8782a`, grey `#8c93a0`.
+- Type: Outfit (display, mirrors the rounded geometric "hvac" letterforms), Manrope
+  (body), JetBrains Mono (micro-labels). Loaded from Google Fonts.
+- The three-arc motif in the hero and CTA bands echoes the logo's swoosh.
+- Motion: IntersectionObserver reveals, slow hero drift, hover lifts. All gated by
+  `prefers-reduced-motion`.
+
+## Content sources
+
+Everything factual comes from the profile PDF: intro letter (Mohammed Abdulai,
+Technical Director), Experience / Integrity / Relationships, vision, mission,
+H-V-A-C core values, five service lines, commercial key offerings, the 16 named
+clients, phones (0599333103 / 0256701135), email, and address.
+
+The v2 Next.js site's invented projects, stats and brand-partner claims were NOT
+carried over.
+
+## Things to confirm with the client before go-live
+
+1. **Opening hours** - the contact page says "Mon to Sat, working hours" because the
+   profile does not state hours. Replace with the real ones.
+2. **System types list** on the services page (split, multi-split, cassette, ducted,
+   VRF) - standard for the trade, but confirm they want all of them named.
+3. **Old phone numbers** on the current WordPress site (0507732410, 0240866825) are
+   not on the new site because the updated profile lists 0599333103 / 0256701135.
+   Confirm which are live.
+4. **Founding year** - the profile says "nearly a decade"; the site uses "~10 yrs"
+   and avoids a specific year. Add one if they want it.
+5. **Client logos** are cropped from the PDF (white backgrounds, ~150-300 px). Ask
+   the client for original logo files for a crisper wall.
+6. **Quote form** opens WhatsApp with the message pre-filled (no backend needed).
+   If they prefer email delivery, point the form at Formspree/Resend.
+
+## Go-live checklist
+
+- Point `hvactechnicalgh.com` DNS at the new host and remove the WordPress site.
+- Add a 1200x630 `assets/img/og.jpg` and update the `og:image` tags (they currently
+  point at team photos, which work but are not the ideal crop).
+- Submit `https://hvactechnicalgh.com/` to Google Search Console. JSON-LD
+  `HVACBusiness` schema is already in `index.html`.
