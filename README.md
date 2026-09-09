@@ -39,9 +39,8 @@ https://gabsno.github.io/hvac-technical/ (repo Gabsno/hvac-technical, deploys fr
 
 - Whole site lives in the brand navy (`#071426` / `#0b1e33`). Light blue `#b9d3ea` carries
   emphasis, orange `#e8782a` is reserved for the primary action. One theme, no inversion.
-- Type: Outfit (display, mirrors the rounded geometric "hvac" letterforms), Manrope
-  (body), JetBrains Mono (micro-labels). Loaded from Google Fonts.
-- The three-arc motif in the hero and CTA bands echoes the logo's swoosh.
+- Type: Outfit (display, mirrors the rounded geometric "hvac" letterforms) and Manrope
+  (body), loaded from Google Fonts.
 - Layout families on the home page: kinetic-type hero, logo marquee, offset manifesto,
   accordion services with a sticky image, sticky-heading process, five-cell bento,
   full-bleed photo band, the H-V-A-C acrostic, CTA footer.
