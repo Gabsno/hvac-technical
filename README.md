@@ -41,7 +41,7 @@ https://gabsno.github.io/hvac-technical/ (repo Gabsno/hvac-technical, deploys fr
   emphasis, orange `#e8782a` is reserved for the primary action. One theme, no inversion.
 - Type: Outfit (display, mirrors the rounded geometric "hvac" letterforms) and Manrope
   (body), loaded from Google Fonts.
-- Layout families on the home page: kinetic-type hero, logo marquee, offset manifesto,
+- Layout families on the home page: kinetic-type hero, clients rail, offset manifesto,
   accordion services with a sticky image, sticky-heading process, five-cell bento,
   full-bleed photo band, the H-V-A-C acrostic, CTA footer.
 - Motion: line-mask hero reveal, CSS scroll-driven parallax and step reveals
@@ -71,6 +71,13 @@ https://gabsno.github.io/hvac-technical/ (repo Gabsno/hvac-technical, deploys fr
   at the top; bento and process cards lean towards the pointer; the commercial band
   drifts as it passes; a light sweeps the primary button on hover; the form lifts
   towards the focused field.
+
+- The clients strip is a rail the visitor drives, not an auto-playing marquee:
+  a native `overflow-x` scroller, so swipe, trackpad and arrow keys all work for
+  free, with buttons for a desktop mouse that dim at each end. The duplicate set
+  of logos the old infinite loop needed is gone, so it is 12 items, not 24.
+  Client logos are full colour everywhere now, on the rail and on the
+  about/work grids.
 
 Two things to know if you touch the motion. The FAQ panel lives inside
 `<details>`, which is not rendered while closed, so the height has no computed

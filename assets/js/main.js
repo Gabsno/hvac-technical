@@ -350,4 +350,29 @@
     bar.setAttribute("aria-hidden", "true");
     document.body.appendChild(bar);
   }
+
+  /* ---- clients rail ----
+     Swipe, trackpad and arrow keys are native to the scroll container; these
+     buttons are for a desktop mouse, and dim when there is no further to go. */
+  var rail = document.getElementById("client-rail");
+  var railNav = document.querySelector(".rail__nav");
+  if (rail && railNav) {
+    var prevBtn = railNav.querySelector('[data-rail="prev"]');
+    var nextBtn = railNav.querySelector('[data-rail="next"]');
+    var step = function () { return Math.max(rail.clientWidth * 0.8, 200); };
+    var sync = function () {
+      var max = rail.scrollWidth - rail.clientWidth;
+      prevBtn.disabled = rail.scrollLeft < 4;
+      nextBtn.disabled = rail.scrollLeft > max - 4;
+    };
+    var nudge = function (dir) {
+      rail.scrollBy({ left: dir * step(), behavior: reduce ? "auto" : "smooth" });
+    };
+    prevBtn.addEventListener("click", function () { nudge(-1); });
+    nextBtn.addEventListener("click", function () { nudge(1); });
+    rail.addEventListener("scroll", sync, { passive: true });
+    window.addEventListener("resize", sync, { passive: true });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(sync);
+    sync();
+  }
 })();
