@@ -200,13 +200,23 @@
     hero.addEventListener("pointerleave", function () { shift.style.transform = ""; });
   }
 
-  /* Spotlight that follows the pointer on tiles, process cards and panels */
+  /* Spotlight follows the pointer on tiles, process cards and panels, and the
+     same reading tilts the card towards it (one rect read per move, not two) */
   if (fine) {
     document.querySelectorAll(".tile, .pcard, .panel").forEach(function (el) {
+      var tilts = !reduce && (el.classList.contains("tile") || el.classList.contains("pcard"));
       el.addEventListener("pointermove", function (e) {
         var r = el.getBoundingClientRect();
-        el.style.setProperty("--mx", (e.clientX - r.left) + "px");
-        el.style.setProperty("--my", (e.clientY - r.top) + "px");
+        var x = e.clientX - r.left, y = e.clientY - r.top;
+        el.style.setProperty("--mx", x + "px");
+        el.style.setProperty("--my", y + "px");
+        if (!tilts) return;
+        el.style.setProperty("--ry", ((x / r.width - 0.5) * 7).toFixed(2) + "deg");
+        el.style.setProperty("--rx", ((0.5 - y / r.height) * 5).toFixed(2) + "deg");
+      });
+      if (tilts) el.addEventListener("pointerleave", function () {
+        el.style.setProperty("--rx", "0deg");
+        el.style.setProperty("--ry", "0deg");
       });
     });
   }
@@ -230,5 +240,114 @@
       var cio = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { run(e.target); cio.unobserve(e.target); } }); }, { threshold: 0.5 });
       counters.forEach(function (el) { cio.observe(el); });
     } else { counters.forEach(run); }
+  }
+})();
+
+
+/* v3.3 motion pass: word-by-word headings, an easing FAQ, a sliding nav
+   indicator and a scroll-progress hairline. */
+(function () {
+  "use strict";
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  /* ---- headings arrive a word at a time ----
+     Only elements already carrying .reveal are split, so they are still
+     invisible when this runs and nothing can flash. The existing reveal
+     observer adds .is-in, which is what starts the words. */
+  document.querySelectorAll(".reveal.h2, .reveal.statement").forEach(function (el) {
+    if (el.querySelector(".w")) return;
+    var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+    var nodes = [], n;
+    while ((n = walker.nextNode())) nodes.push(n);  // collect first; replacing invalidates the walk
+    var i = 0;
+    nodes.forEach(function (node) {
+      if (!node.nodeValue.trim() || !node.parentNode) return;
+      var frag = document.createDocumentFragment();
+      node.nodeValue.split(/(\s+)/).forEach(function (tok) {
+        if (!tok) return;
+        if (/^\s+$/.test(tok)) { frag.appendChild(document.createTextNode(tok)); return; }
+        var w = document.createElement("span");
+        w.className = "w";
+        var inner = document.createElement("span");
+        inner.textContent = tok;
+        inner.style.setProperty("--wi", i++);
+        w.appendChild(inner);
+        frag.appendChild(w);
+      });
+      node.parentNode.replaceChild(frag, node);
+    });
+    if (i) el.classList.add("split");
+  });
+
+  /* ---- the FAQ eases open and shut instead of snapping ---- */
+  if (!reduce) {
+    document.querySelectorAll(".faq details").forEach(function (d) {
+      var summary = d.querySelector("summary");
+      var body = d.querySelector(".faq__body");
+      if (!summary || !body) return;
+      var busy = false;
+      summary.addEventListener("click", function (e) {
+        e.preventDefault();
+        if (busy) return;
+        busy = true;
+        var opening = !d.open, done = false;
+        var finish = function () {
+          if (done) return;
+          done = true;
+          body.style.height = "";
+          body.style.opacity = "";
+          if (!opening) d.open = false;
+          busy = false;
+        };
+        if (opening) d.open = true;            // must be rendered before it can be measured
+        body.style.height = "auto";
+        var full = body.scrollHeight;
+        body.style.height = (opening ? 0 : full) + "px";
+        body.style.opacity = opening ? "0" : "1";
+        // A panel that was inside closed <details> has no computed style to ease
+        // from, so flush layout here: without this the height jumps instead.
+        void body.offsetHeight;
+        body.style.height = (opening ? full : 0) + "px";
+        body.style.opacity = opening ? "1" : "0";
+        body.addEventListener("transitionend", function h(ev) {
+          if (ev.propertyName !== "height") return;
+          body.removeEventListener("transitionend", h);
+          finish();
+        });
+        setTimeout(finish, 700);               // never leave a panel stuck
+      });
+    });
+  }
+
+  /* ---- one indicator slides between the nav items ---- */
+  var navLinks = document.querySelector(".nav__links");
+  if (navLinks && fine && !reduce) {
+    var ink = document.createElement("span");
+    ink.className = "nav__ink";
+    navLinks.appendChild(ink);
+    navLinks.classList.add("has-ink");
+    var current = navLinks.querySelector('a[aria-current="page"]');
+    var moveTo = function (a) {
+      if (!a) { ink.style.opacity = "0"; return; }
+      ink.style.opacity = "1";
+      ink.style.width = Math.max(0, a.offsetWidth - 29) + "px";
+      ink.style.transform = "translateX(" + (a.offsetLeft + 14) + "px)";
+    };
+    moveTo(current);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { moveTo(current); });
+    navLinks.querySelectorAll("a").forEach(function (a) {
+      a.addEventListener("pointerenter", function () { moveTo(a); });
+    });
+    navLinks.addEventListener("pointerleave", function () { moveTo(current); });
+    window.addEventListener("resize", function () { moveTo(current); }, { passive: true });
+  }
+
+  /* ---- scroll-progress hairline (CSS drives it; this only places it) ---- */
+  if (!reduce) {
+    var bar = document.createElement("div");
+    bar.className = "progress";
+    bar.setAttribute("aria-hidden", "true");
+    document.body.appendChild(bar);
   }
 })();

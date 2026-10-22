@@ -566,3 +566,86 @@ body::after {
     @keyframes wipe { from { clip-path: inset(0 0 100% 0 round var(--r)); } to { clip-path: inset(0 0 0 0 round var(--r)); } }
   }
 }
+
+/* ==========================================================================
+   v3.3  -  motion pass
+   Word-by-word headings, an easing FAQ disclosure, a nav that reacts to
+   scroll, a scroll-progress hairline, pointer tilt on cards, band drift.
+   Reduced-motion overrides sit at the bottom of this block.
+   ========================================================================== */
+
+/* Headings arrive word by word. JS wraps each word as .w > span; the wrapper
+   is the mask. The padding/margin pair gives descenders room inside the clip. */
+.split .w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.14em; margin-bottom: -0.14em; }
+.split .w > span { display: inline-block; transform: translateY(110%); transition: transform 0.8s var(--ease); transition-delay: calc(var(--wi, 0) * 34ms); }
+.split.is-in .w > span { transform: none; }
+.reveal.split { transform: none; }   /* the words carry the movement now, not the block */
+
+/* FAQ: height is driven from JS so the disclosure eases instead of snapping */
+.faq__body { overflow: hidden; transition: height 0.42s var(--ease), opacity 0.3s var(--ease); }
+
+/* The bar tightens once the page has moved */
+.nav { transition: border-color 0.3s var(--ease), height 0.35s var(--ease), background-color 0.3s var(--ease); }
+.nav.is-scrolled { height: 60px; background: rgba(7, 20, 38, 0.88); }
+.nav__logo img { transition: height 0.35s var(--ease); }
+.nav.is-scrolled .nav__logo img { height: 31px; }
+
+/* One indicator slides between nav items instead of a static underline */
+.nav__links { position: relative; }
+.nav__ink {
+  position: absolute; bottom: 0.3rem; left: 0; height: 2px; width: 0;
+  border-radius: 2px; background: var(--orange); opacity: 0; pointer-events: none;
+  transition: transform 0.38s var(--ease), width 0.38s var(--ease), opacity 0.3s var(--ease);
+}
+.nav__links.has-ink a[aria-current="page"]::after { opacity: 0; }
+
+/* Scroll-progress hairline: injected by JS, driven entirely by CSS */
+.progress {
+  position: fixed; top: 0; left: 0; width: 100%; height: 2px; z-index: 55; pointer-events: none;
+  background: linear-gradient(90deg, var(--orange), var(--sky));
+  transform: scaleX(0); transform-origin: 0 50%;
+}
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .progress { animation: progressGrow linear both; animation-timeline: scroll(root); }
+    @keyframes progressGrow { to { transform: scaleX(1); } }
+  }
+}
+
+/* Cards lean towards the pointer */
+.tile, .pcard { transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform 0.45s var(--ease); }
+
+/* The commercial band drifts as it passes */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .band__media img { animation: bandDrift linear both; animation-timeline: view(); animation-range: cover 0% cover 100%; }
+    @keyframes bandDrift { from { transform: scale(1.14) translateY(-3.5%); } to { transform: scale(1.14) translateY(3.5%); } }
+  }
+}
+
+/* A light sweeps the primary action on hover */
+.btn--primary { position: relative; overflow: hidden; }
+.btn--primary::after {
+  content: ""; position: absolute; top: 0; left: -120%; width: 55%; height: 100%; pointer-events: none;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.32), transparent);
+  transform: skewX(-18deg); transition: left 0.65s var(--ease);
+}
+.btn--primary:hover::after { left: 135%; }
+
+/* Form lifts towards the focused field */
+.field { transition: transform 0.25s var(--ease); }
+.field label { transition: color 0.25s var(--ease); }
+.field:focus-within { transform: translateY(-2px); }
+.field:focus-within label { color: var(--sky); }
+
+@media (prefers-reduced-motion: reduce) {
+  .split .w { overflow: visible; padding-bottom: 0; margin-bottom: 0; }
+  .split .w > span { transform: none !important; }
+  .nav.is-scrolled { height: var(--nav-h); }
+  .nav.is-scrolled .nav__logo img { height: 38px; }
+  .nav__ink, .progress { display: none; }
+  .faq__body { transition: none; height: auto !important; opacity: 1 !important; }
+  .tile, .pcard { transform: none !important; }
+  .btn--primary::after { display: none; }
+  .field:focus-within { transform: none; }
+}

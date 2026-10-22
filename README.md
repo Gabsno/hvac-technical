@@ -64,6 +64,20 @@ https://gabsno.github.io/hvac-technical/ (repo Gabsno/hvac-technical, deploys fr
   (white letters, original orange and light-blue arcs). `logo.png` is the source.
 - The wall-mounted outdoor unit and the condenser bank are Unsplash photos; the
   rest of the photography is the client team from the profile PDF.
+- v3.3 motion pass: section headings arrive a word at a time (JS wraps each word,
+  the wrapper is the mask, the existing `.reveal` observer triggers it); the FAQ
+  eases open instead of snapping; the bar shrinks 72px to 60px once the page moves
+  and a single indicator slides between nav items; a scroll-progress hairline sits
+  at the top; bento and process cards lean towards the pointer; the commercial band
+  drifts as it passes; a light sweeps the primary button on hover; the form lifts
+  towards the focused field.
+
+Two things to know if you touch the motion. The FAQ panel lives inside
+`<details>`, which is not rendered while closed, so the height has no computed
+value to ease from: `main.js` forces a layout flush (`void body.offsetHeight`)
+between the start and end values. Remove it and the panel jumps. And a closed
+`<details>` keeps a remembered box size, so `getBoundingClientRect()` cannot tell
+open from closed; hit-test with `elementFromPoint` instead.
 
 ## Performance
 
@@ -130,7 +144,6 @@ so they are correct the moment DNS moves.
    and avoids a specific year. Add one if they want it.
 5. **Client logos** are cropped from the PDF. Ask the client for original logo files for a
    crisper wall.
-   the client for original logo files for a crisper wall.
 6. **Quote form** opens WhatsApp with the message pre-filled (no backend needed).
    If they prefer email delivery, point the form at Formspree/Resend.
 
