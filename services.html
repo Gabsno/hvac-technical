@@ -31,6 +31,7 @@
         <a href="index.html">Home</a>
         <a href="about.html">About</a>
         <a href="services.html">Services</a>
+        <a href="sizer.html">AC sizer</a>
         <a href="work.html">Clients &amp; Work</a>
         <a href="contact.html">Contact</a>
       </nav>
@@ -50,6 +51,7 @@
       <a href="index.html">Home</a>
       <a href="about.html">About</a>
       <a href="services.html">Services</a>
+      <a href="sizer.html">AC sizer</a>
       <a href="work.html">Clients &amp; Work</a>
       <a href="contact.html">Contact</a>
     </nav>
@@ -158,71 +160,17 @@
       </div>
     </section>
 
-    <!-- Room sizer -->
-    <section class="section" id="sizer" aria-labelledby="sizer-title">
+    <!-- Pointer to the sizer, which now has its own page -->
+    <section class="section--tight" aria-labelledby="sizer-link">
       <div class="container">
-        <div class="head">
-          <h2 class="h2 reveal" id="sizer-title">What size unit does your room need?</h2>
-          <p class="lede reveal" style="--i:1">Change the figures and the estimate follows. It is a starting point for the conversation, not a specification.</p>
-        </div>
-
-        <div class="sizer reveal" style="--i:2">
-          <form class="sizer__form" id="sizer-form" novalidate>
-            <div class="form__row">
-              <div class="field">
-                <label for="sz-length">Room length (m)</label>
-                <input id="sz-length" type="number" min="1" max="60" step="0.1" value="4" inputmode="decimal">
-              </div>
-              <div class="field">
-                <label for="sz-width">Room width (m)</label>
-                <input id="sz-width" type="number" min="1" max="60" step="0.1" value="4" inputmode="decimal">
-              </div>
-            </div>
-            <div class="form__row">
-              <div class="field">
-                <label for="sz-use">What the room is used for</label>
-                <select id="sz-use">
-                  <option value="bedroom">Bedroom</option>
-                  <option value="living" selected>Living room</option>
-                  <option value="office">Office</option>
-                  <option value="retail">Shop or restaurant</option>
-                  <option value="kitchen">Kitchen</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="sz-sun">Afternoon sun</label>
-                <select id="sz-sun">
-                  <option value="0.9">Mostly shaded</option>
-                  <option value="1" selected>Some sun</option>
-                  <option value="1.17">Strong, west facing</option>
-                </select>
-              </div>
-            </div>
-            <div class="form__row">
-              <div class="field">
-                <label for="sz-people">People in the room, usually</label>
-                <input id="sz-people" type="number" min="1" max="80" step="1" value="2" inputmode="numeric">
-              </div>
-              <div class="field">
-                <span class="sizer__legend">Anything else</span>
-                <label class="sizer__check"><input type="checkbox" id="sz-glass"> <span>Large windows or a glass front</span></label>
-                <label class="sizer__check"><input type="checkbox" id="sz-roof"> <span>Roof directly above the room</span></label>
-              </div>
-            </div>
-          </form>
-
-          <div class="sizer__out">
-            <p class="eyebrow">Indicative capacity</p>
-            <p class="sizer__btu" aria-live="polite"><strong id="sz-btu">12,000</strong><span>BTU/hr</span></p>
-            <p class="sizer__unit" id="sz-unit">Around a 1.5 HP wall split</p>
-            <dl class="sizer__meta">
-              <div><dt>Floor area</dt><dd id="sz-area">16 m&sup2;</dd></div>
-              <div><dt>Likely system</dt><dd id="sz-type">Wall-mounted split</dd></div>
-            </dl>
-            <p class="small sizer__note">A guide only. Ceiling height, insulation, how many walls face outside and what runs in the room all move the number, so we confirm it with a proper heat-load calculation on site before quoting.</p>
-            <a class="btn btn--primary" id="sz-send" href="https://wa.me/233599333103" target="_blank" rel="noopener">Send these figures to us <svg class="icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M187.58,144.84l-32-16a8,8,0,0,0-8,.5l-14.69,9.8a40.55,40.55,0,0,1-16-16l9.8-14.69a8,8,0,0,0,.5-8l-16-32A8,8,0,0,0,104,64a40,40,0,0,0-40,40,88.1,88.1,0,0,0,88,88,40,40,0,0,0,40-40A8,8,0,0,0,187.58,144.84ZM152,176a72.08,72.08,0,0,1-72-72A24,24,0,0,1,99.29,80.46l11.48,23L101,118a8,8,0,0,0-.73,7.51,56.47,56.47,0,0,0,30.15,30.15A8,8,0,0,0,138,155l14.61-9.74,23,11.48A24,24,0,0,1,152,176ZM128,24A104,104,0,0,0,36.18,176.88L24.83,210.93a16,16,0,0,0,20.24,20.24l34.05-11.35A104,104,0,1,0,128,24Zm0,192a87.87,87.87,0,0,1-44.06-11.81,8,8,0,0,0-6.54-.67L40,216,52.47,178.6a8,8,0,0,0-.66-6.54A88,88,0,1,1,128,216Z"/></svg></a>
+        <a class="promo reveal" href="sizer.html">
+          <div>
+            <p class="eyebrow">Work it out yourself</p>
+            <h2 class="h3" id="sizer-link">What size unit does your room need?</h2>
+            <p>Put in the room and get an indicative capacity in BTU and horsepower, then send the figures straight to us.</p>
           </div>
-        </div>
+          <span class="promo__go" aria-hidden="true"><svg class="icon" viewBox="0 0 256 256" fill="currentColor"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg></span>
+        </a>
       </div>
     </section>
 
@@ -293,6 +241,7 @@
           <ul>
             <li><a href="about.html">About</a></li>
             <li><a href="services.html">Services</a></li>
+            <li><a href="sizer.html">AC sizer</a></li>
             <li><a href="work.html">Clients &amp; work</a></li>
             <li><a href="contact.html">Contact</a></li>
           </ul>

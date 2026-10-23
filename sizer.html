@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en-GH">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AC Size Calculator | What Size Air Conditioner Do I Need? | HVAC Technical Services, Accra</title>
+  <meta name="description" content="Work out what size air conditioner a room needs. Enter the room size, what it is used for, the sun it gets and how many people use it, and get an indicative capacity in BTU and horsepower for Ghanaian conditions.">
+  <link rel="canonical" href="https://hvactechnicalgh.com/sizer.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="What size AC does your room need? | HVAC Technical Services">
+  <meta property="og:description" content="A quick indicative size in BTU and horsepower for your room, from a Ghanaian HVAC contractor. Send the figures straight to us for a site assessment.">
+  <meta property="og:image" content="https://hvactechnicalgh.com/assets/img/og.jpg">
+  <meta property="og:url" content="https://hvactechnicalgh.com/sizer.html">
+  <meta name="theme-color" content="#071426">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/outfit-var-latin.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/manrope-var-latin.woff2">
+  <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+
+  <a class="sr-only" href="#main">Skip to content</a>
+
+  <header class="nav">
+    <div class="container">
+      <a class="nav__logo" href="index.html" aria-label="HVAC Technical Services, home">
+        <img src="assets/img/logo-dark.webp" alt="HVAC Technical Services" width="120" height="38">
+      </a>
+      <nav class="nav__links" aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="services.html">Services</a>
+        <a href="sizer.html">AC sizer</a>
+        <a href="work.html">Clients &amp; Work</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <div class="nav__actions">
+        <a class="btn btn--primary btn--sm" href="contact.html#quote">Request a quote</a>
+      </div>
+      <button class="nav__burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="drawer"><svg class="icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"/></svg></button>
+    </div>
+  </header>
+
+  <div class="drawer" id="drawer" data-open="false" aria-hidden="true">
+    <div class="drawer__top">
+      <img src="assets/img/logo-dark.webp" alt="HVAC Technical Services" width="114" height="36">
+      <button class="drawer__close" type="button" aria-label="Close menu"><svg class="icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg></button>
+    </div>
+    <nav class="drawer__links" aria-label="Mobile">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="services.html">Services</a>
+      <a href="sizer.html">AC sizer</a>
+      <a href="work.html">Clients &amp; Work</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div class="drawer__foot">
+      <a class="btn btn--primary btn--lg" href="contact.html#quote">Request a quote</a>
+      <a class="btn btn--ghost btn--lg" href="tel:+233599333103">Call 059 933 3103</a>
+      <p class="small">Professional, Effective, Timely</p>
+    </div>
+  </div>
+
+    <main id="main">
+
+    <section>
+      <div class="container opener">
+        <h1 class="h1">
+          <span class="line"><span style="--i:0">What size AC does</span></span>
+          <span class="line"><span style="--i:1"><em>your room need?</em></span></span>
+        </h1>
+        <p class="lede">Put in the room and this gives you an indicative cooling capacity in BTU and the horsepower people ask for in the shop. Change anything and the number follows.</p>
+      </div>
+    </section>
+
+    <!-- Room sizer -->
+    <section class="section" id="sizer" aria-label="Room sizer">
+      <div class="container">
+
+        <div class="sizer reveal" style="--i:2">
+          <form class="sizer__form" id="sizer-form" novalidate>
+            <div class="form__row">
+              <div class="field">
+                <label for="sz-length">Room length (m)</label>
+                <input id="sz-length" type="number" min="1" max="60" step="0.1" value="4" inputmode="decimal">
+              </div>
+              <div class="field">
+                <label for="sz-width">Room width (m)</label>
+                <input id="sz-width" type="number" min="1" max="60" step="0.1" value="4" inputmode="decimal">
+              </div>
+            </div>
+            <div class="form__row">
+              <div class="field">
+                <label for="sz-use">What the room is used for</label>
+                <select id="sz-use">
+                  <option value="bedroom">Bedroom</option>
+                  <option value="living" selected>Living room</option>
+                  <option value="office">Office</option>
+                  <option value="retail">Shop or restaurant</option>
+                  <option value="kitchen">Kitchen</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="sz-sun">Afternoon sun</label>
+                <select id="sz-sun">
+                  <option value="0.9">Mostly shaded</option>
+                  <option value="1" selected>Some sun</option>
+                  <option value="1.17">Strong, west facing</option>
+                </select>
+              </div>
+            </div>
+            <div class="form__row">
+              <div class="field">
+                <label for="sz-people">People in the room, usually</label>
+                <input id="sz-people" type="number" min="1" max="80" step="1" value="2" inputmode="numeric">
+              </div>
+              <div class="field">
+                <span class="sizer__legend">Anything else</span>
+                <label class="sizer__check"><input type="checkbox" id="sz-glass"> <span>Large windows or a glass front</span></label>
+                <label class="sizer__check"><input type="checkbox" id="sz-roof"> <span>Roof directly above the room</span></label>
+              </div>
+            </div>
+          </form>
+
+          <div class="sizer__out">
+            <p class="eyebrow">Indicative capacity</p>
+            <p class="sizer__btu" aria-live="polite"><strong id="sz-btu">12,000</strong><span>BTU/hr</span></p>
+            <p class="sizer__unit" id="sz-unit">Around a 1.5 HP wall split</p>
+            <dl class="sizer__meta">
+              <div><dt>Floor area</dt><dd id="sz-area">16 m&sup2;</dd></div>
+              <div><dt>Likely system</dt><dd id="sz-type">Wall-mounted split</dd></div>
+            </dl>
+            <p class="small sizer__note">A guide only. Ceiling height, insulation, how many walls face outside and what runs in the room all move the number, so we confirm it with a proper heat-load calculation on site before quoting.</p>
+            <a class="btn btn--primary" id="sz-send" href="https://wa.me/233599333103" target="_blank" rel="noopener">Send these figures to us <svg class="icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M187.58,144.84l-32-16a8,8,0,0,0-8,.5l-14.69,9.8a40.55,40.55,0,0,1-16-16l9.8-14.69a8,8,0,0,0,.5-8l-16-32A8,8,0,0,0,104,64a40,40,0,0,0-40,40,88.1,88.1,0,0,0,88,88,40,40,0,0,0,40-40A8,8,0,0,0,187.58,144.84ZM152,176a72.08,72.08,0,0,1-72-72A24,24,0,0,1,99.29,80.46l11.48,23L101,118a8,8,0,0,0-.73,7.51,56.47,56.47,0,0,0,30.15,30.15A8,8,0,0,0,138,155l14.61-9.74,23,11.48A24,24,0,0,1,152,176ZM128,24A104,104,0,0,0,36.18,176.88L24.83,210.93a16,16,0,0,0,20.24,20.24l34.05-11.35A104,104,0,1,0,128,24Zm0,192a87.87,87.87,0,0,1-44.06-11.81,8,8,0,0,0-6.54-.67L40,216,52.47,178.6a8,8,0,0,0-.66-6.54A88,88,0,1,1,128,216Z"/></svg></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- What the estimate cannot know -->
+    <section class="section section--raised" aria-labelledby="whatnext">
+      <div class="container">
+        <div class="head">
+          <h2 class="h2 reveal" id="whatnext">What the number above cannot see.</h2>
+          <p class="lede reveal" style="--i:1">A figure from a form gets you in the right range, which is enough to budget and to rule options in or out. Before we quote, we come and check the things that move it.</p>
+        </div>
+        <div class="columns">
+          <div class="reveal">
+            <h3 class="h3">The fabric</h3>
+            <p>Ceiling height, insulation, how many walls face outside, what is above and below the room, and how well the doors and windows actually seal.</p>
+          </div>
+          <div class="reveal" style="--i:1">
+            <h3 class="h3">The load inside</h3>
+            <p>Equipment, lighting, cooking, how long the room is occupied and how often the door opens. A busy shop and a quiet office of the same size are not the same job.</p>
+          </div>
+          <div class="reveal" style="--i:2">
+            <h3 class="h3">The install</h3>
+            <p>Where the outdoor unit can go, pipe run length, drainage, and whether the supply can carry it. These decide what is practical, not just what is adequate.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__cta">
+        <h2 class="h2 reveal">Tell us about your building.</h2>
+        <div class="footer__cta-actions reveal" style="--i:1">
+          <a class="btn btn--primary btn--lg" href="contact.html#quote">Request a quote <svg class="icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg></a>
+          <a class="plain" href="tel:+233599333103">059 933 3103</a>
+        </div>
+      </div>
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <img src="assets/img/logo-dark.webp" alt="HVAC Technical Services" width="126" height="40" loading="lazy">
+          <p>Proudly indigenous Ghanaian HVAC and electrical contractor, based in McCarthy Hill, Accra.</p>
+          <p class="small">Professional, Effective, Timely</p>
+        </div>
+        <div>
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="services.html">Services</a></li>
+            <li><a href="sizer.html">AC sizer</a></li>
+            <li><a href="work.html">Clients &amp; work</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Services</h4>
+          <ul>
+            <li><a href="services.html#design-installation">Design and installation</a></li>
+            <li><a href="services.html#maintenance">Preventative maintenance</a></li>
+            <li><a href="services.html#repairs">Repairs and expansions</a></li>
+            <li><a href="services.html#electrical">Electrical</a></li>
+            <li><a href="services.html#supply">Units and parts</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="tel:+233599333103">059 933 3103</a></li>
+            <li><a href="tel:+233256701135">025 670 1135</a></li>
+            <li><a href="mailto:info@hvactechnicalgh.com">info@hvactechnicalgh.com</a></li>
+            <li><a href="https://maps.google.com/?q=13th+Avenue+Street,+McCarthy+Hill,+Accra" target="_blank" rel="noopener">13th Avenue Street, McCarthy Hill, Accra</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>&copy; <span data-year>2026</span> HVAC Technical Services. All rights reserved.</span>
+        <span>hvactechnicalgh.com</span>
+      </div>
+    </div>
+  </footer>
+
+  <a class="wa-float" href="https://wa.me/233599333103?text=Hello%20HVAC%20Technical%2C%20I%27d%20like%20to%20discuss%20a%20project." target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp"><svg class="icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M187.58,144.84l-32-16a8,8,0,0,0-8,.5l-14.69,9.8a40.55,40.55,0,0,1-16-16l9.8-14.69a8,8,0,0,0,.5-8l-16-32A8,8,0,0,0,104,64a40,40,0,0,0-40,40,88.1,88.1,0,0,0,88,88,40,40,0,0,0,40-40A8,8,0,0,0,187.58,144.84ZM152,176a72.08,72.08,0,0,1-72-72A24,24,0,0,1,99.29,80.46l11.48,23L101,118a8,8,0,0,0-.73,7.51,56.47,56.47,0,0,0,30.15,30.15A8,8,0,0,0,138,155l14.61-9.74,23,11.48A24,24,0,0,1,152,176ZM128,24A104,104,0,0,0,36.18,176.88L24.83,210.93a16,16,0,0,0,20.24,20.24l34.05-11.35A104,104,0,1,0,128,24Zm0,192a87.87,87.87,0,0,1-44.06-11.81,8,8,0,0,0-6.54-.67L40,216,52.47,178.6a8,8,0,0,0-.66-6.54A88,88,0,1,1,128,216Z"/></svg></a>
+
+  <script src="assets/js/main.js" defer></script>
+</body>
+</html>

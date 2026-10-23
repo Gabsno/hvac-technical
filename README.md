@@ -15,6 +15,7 @@ site-v3/
   index.html        Home
   about.html        About (Technical Director's letter, overview, vision/mission, values, standards)
   services.html     6 service lines + scope of service areas + FAQ
+  sizer.html        AC size calculator, the one real tool on the site
   work.html         Client logo wall, sector breakdown, on-site photo gallery
   contact.html      Contact details, WhatsApp quote form, Google Maps embed
   assets/css/main.css
@@ -80,7 +81,13 @@ https://gabsno.github.io/hvac-technical/ (repo Gabsno/hvac-technical, deploys fr
   logo set is duplicated in the markup so the loop has no seam, with the second
   pass `aria-hidden` so screen readers hear 12 clients, not 24. Logos are full
   colour, here and on the about/work grids.
-- Services carries a room sizer: floor area, use, sun, occupancy and two
+- The sizer has its own page (`sizer.html`, "AC sizer" in the nav) because it is
+  a draw in its own right: "what size AC do I need" is a real search, and it is a
+  link that can be pasted into WhatsApp on its own. The home page carries a promo
+  card to it and the services page ends with a pointer, so there are three ways in
+  from anywhere on the site. It was previously buried at the bottom of services,
+  where nobody would have found it.
+- The sizer itself: floor area, use, sun, occupancy and two
   checkboxes give an indicative BTU/hr and the nearest HP, ending in a WhatsApp
   message with the figures already written out. 600 BTU/hr per square metre is
   the tropical starting point, adjusted for use, sun, glazing, roof above and

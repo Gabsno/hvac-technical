@@ -706,3 +706,32 @@ body::after {
 .sizer__meta dd { margin: 0; font-weight: 600; font-size: 0.95rem; text-align: right; }
 .sizer__note { margin-top: 0.2rem; }
 .sizer__out .btn { margin-top: 0.7rem; justify-self: start; }
+
+/* Promo card: the entry point to the sizer, on the home and services pages */
+.promo {
+  display: flex; align-items: center; justify-content: space-between; gap: clamp(1.2rem, 3vw, 2.5rem);
+  padding: clamp(1.4rem, 3vw, 2.4rem);
+  border-radius: var(--r); background: var(--bg-2); border: 1px solid var(--line-2);
+  transition: transform 0.3s var(--ease), border-color 0.3s var(--ease), background-color 0.3s var(--ease);
+}
+.promo:hover { transform: translateY(-3px); border-color: var(--sky); background: var(--bg-3); }
+.promo__body { display: grid; gap: 0.5rem; }
+.promo__body p:last-child { color: var(--text-2); max-width: 56ch; }
+.promo__go {
+  flex: none; width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--orange); color: #fff; font-size: 22px;
+  transition: transform 0.3s var(--ease);
+}
+.promo:hover .promo__go { transform: translateX(5px); }
+@media (max-width: 640px) {
+  .promo { flex-direction: column; align-items: flex-start; }
+  .promo__go { width: 46px; height: 46px; font-size: 19px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .promo:hover { transform: none; }
+  .promo:hover .promo__go { transform: none; }
+}
+
+/* On its own page the sizer is the content, so it starts straight after the
+   intro rather than carrying a full section's worth of space above it. */
+#sizer { padding-top: clamp(0.5rem, 1.5vw, 1.5rem); }
