@@ -87,7 +87,15 @@ https://gabsno.github.io/hvac-technical/ (repo Gabsno/hvac-technical, deploys fr
   card to it and the services page ends with a pointer, so there are three ways in
   from anywhere on the site. It was previously buried at the bottom of services,
   where nobody would have found it.
-- The sizer itself: floor area, use, sun, occupancy and two
+- The sizer is a room-by-room quotation builder, not a single-shot calculator.
+  Add up to twelve rooms, each with its own name and figures and its own result;
+  the panel beside it keeps a running total, a tally of units ("2 x 1.5 HP,
+  1 x 6 HP") and a suggested approach. Then name, phone and the rest go in and
+  the whole thing leaves as one itemised WhatsApp message, or the same body as
+  an email. Name and phone are required before it will send. Past 30,000 BTU a
+  room reports its figure as capacity rather than a single unit, because nobody
+  hangs one 6 HP box on a shop wall.
+- The sizing maths: floor area, use, sun, occupancy and two
   checkboxes give an indicative BTU/hr and the nearest HP, ending in a WhatsApp
   message with the figures already written out. 600 BTU/hr per square metre is
   the tropical starting point, adjusted for use, sun, glazing, roof above and

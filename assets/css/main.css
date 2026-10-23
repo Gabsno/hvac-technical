@@ -687,14 +687,6 @@ body::after {
    Room sizer (services page). An indicative cooling load from a few inputs,
    ending in a WhatsApp message with the figures already filled in.
    ========================================================================== */
-.sizer { display: grid; gap: 1.5rem; align-items: start; }
-@media (min-width: 900px) { .sizer { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: clamp(1.5rem, 3vw, 2.5rem); } }
-
-.sizer__form { display: grid; gap: 1rem; padding: clamp(1.4rem, 2.5vw, 2rem); border-radius: var(--r); background: var(--bg-1); border: 1px solid var(--line); }
-.sizer__legend { font-weight: 700; font-size: 0.88rem; }
-.field label.sizer__check { display: flex; align-items: center; gap: 0.6rem; font-weight: 500; font-size: 0.95rem; color: var(--text-2); cursor: pointer; padding: 0.2rem 0; }
-.field label.sizer__check input { width: 18px; height: 18px; flex: none; accent-color: var(--orange); cursor: pointer; }
-
 .sizer__out { display: grid; gap: 0.55rem; align-content: start; padding: clamp(1.4rem, 2.5vw, 2rem); border-radius: var(--r); background: var(--bg-2); border: 1px solid var(--line-2); }
 .sizer__btu { display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; }
 .sizer__btu strong { font-family: var(--font-display); font-weight: 700; font-size: clamp(2.6rem, 6vw, 4rem); line-height: 1; letter-spacing: -0.04em; color: var(--orange); font-variant-numeric: tabular-nums; }
@@ -735,3 +727,44 @@ body::after {
 /* On its own page the sizer is the content, so it starts straight after the
    intro rather than carrying a full section's worth of space above it. */
 #sizer { padding-top: clamp(0.5rem, 1.5vw, 1.5rem); }
+
+/* Room-by-room builder: a list of rooms on the left, the running total beside it */
+.builder { display: grid; gap: 1.5rem; align-items: start; }
+@media (min-width: 1000px) {
+  .builder { grid-template-columns: minmax(0, 1fr) 340px; gap: clamp(1.5rem, 3vw, 2.5rem); }
+  .builder__side { position: sticky; top: calc(var(--nav-h) + 1.5rem); }
+}
+.rooms { display: grid; gap: 1rem; margin-bottom: 1.2rem; }
+.room { padding: clamp(1rem, 2vw, 1.4rem); border-radius: var(--r); background: var(--bg-1); border: 1px solid var(--line); }
+.room__head { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.9rem; }
+.room__name {
+  flex: 1 1 auto; min-width: 0; font: inherit; font-weight: 700; color: var(--text);
+  background: transparent; border: 0; border-bottom: 1px solid var(--line-2); border-radius: 0; padding: 0.35rem 0;
+}
+.room__name::placeholder { color: var(--muted); font-weight: 600; }
+.room__name:focus { outline: none; border-bottom-color: var(--sky); }
+.room__res { flex: none; font-size: 0.9rem; color: var(--text-2); white-space: nowrap; }
+.room__res strong { font-family: var(--font-display); font-size: 1.15rem; color: var(--orange); font-variant-numeric: tabular-nums; }
+.room__del {
+  flex: none; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line-2);
+  display: grid; place-items: center; color: var(--text-2); font-size: 15px;
+  transition: color 0.2s var(--ease), border-color 0.2s var(--ease), background-color 0.2s var(--ease), opacity 0.2s var(--ease);
+}
+.room__del:hover:not(:disabled) { color: var(--text); border-color: var(--sky); background: rgba(185, 211, 234, 0.08); }
+.room__del:disabled { opacity: 0.22; cursor: default; }
+
+.room__grid { display: grid; gap: 0.7rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 720px) { .room__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.rfield { display: grid; gap: 0.3rem; align-content: start; }
+.rfield > span { font-size: 0.76rem; font-weight: 700; letter-spacing: 0.02em; color: var(--muted); }
+.rfield input, .rfield select {
+  font: inherit; font-size: 0.95rem; color: var(--text); width: 100%;
+  padding: 0.55rem 0.7rem; border: 1.5px solid var(--line-2); border-radius: var(--r-input); background: var(--bg-2);
+  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+.rfield input:focus, .rfield select:focus { outline: none; border-color: var(--sky); box-shadow: 0 0 0 3px rgba(185, 211, 234, 0.14); }
+.rfield--checks { gap: 0.4rem; align-content: center; grid-column: span 2; }
+@media (min-width: 720px) { .rfield--checks { grid-column: auto; } }
+.rcheck { display: flex; align-items: center; gap: 0.5rem; font-size: 0.86rem; color: var(--text-2); cursor: pointer; }
+.rcheck input { width: 16px; height: 16px; flex: none; accent-color: var(--orange); cursor: pointer; }
+#room-cap { margin-top: 0.8rem; max-width: 46ch; }

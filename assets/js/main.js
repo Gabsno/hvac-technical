@@ -420,18 +420,18 @@
 })();
 
 
-/* Room sizer (services page).
-   An indicative cooling load, not a design. 600 BTU/hr per square metre is the
-   usual tropical starting point for a room of normal ceiling height; the rest
-   adjusts for how hard that room has to work. A real figure comes from a
-   heat-load calculation on site, which the copy says plainly. */
+/* Room by room sizing, then a quotation request.
+   Indicative only, not a design. 600 BTU/hr per square metre is the usual
+   tropical starting point for a room of normal ceiling height; the rest
+   adjusts for how hard that room has to work. The real figure comes from a
+   heat-load calculation on site, which the page says plainly. */
 (function () {
   "use strict";
-  var form = document.getElementById("sizer-form");
-  if (!form) return;
-  var $ = function (id) { return document.getElementById(id); };
+  var list = document.getElementById("rooms");
+  var tpl = document.getElementById("room-tpl");
+  if (!list || !tpl) return;
 
-  // Capacities as they are actually sold in Ghana, against the HP people ask for
+  var MAX_ROOMS = 12;
   var SIZES = [
     { btu: 9000, hp: "1 HP" }, { btu: 12000, hp: "1.5 HP" }, { btu: 18000, hp: "2 HP" },
     { btu: 24000, hp: "2.5 HP" }, { btu: 30000, hp: "3 HP" }, { btu: 36000, hp: "4 HP" },
@@ -445,63 +445,162 @@
     kitchen: { k: 1.00, add: 4000, label: "Kitchen" }   // cooking equipment
   };
 
-  var clamp = function (el, min, max, dflt) {
+  var $ = function (id) { return document.getElementById(id); };
+  var fmt = function (n) { return n.toLocaleString("en-GB"); };
+  var cards = function () { return Array.prototype.slice.call(list.querySelectorAll(".room")); };
+
+  function clampVal(el, min, max, dflt) {
     var v = parseFloat(el.value);
     if (!isFinite(v)) return dflt;
     return Math.min(Math.max(v, min), max);
-  };
-
-  function calc() {
-    var L = clamp($("sz-length"), 1, 60, 4);
-    var W = clamp($("sz-width"), 1, 60, 4);
-    var people = Math.round(clamp($("sz-people"), 1, 80, 2));
-    var useKey = $("sz-use").value;
-    var use = USE[useKey] || USE.living;
-    var sunSel = $("sz-sun");
-    var sun = parseFloat(sunSel.value) || 1;
-    var glass = $("sz-glass").checked, roof = $("sz-roof").checked;
-    var area = L * W;
-
-    var btu = area * 600 * use.k * sun;
-    if (glass) btu *= 1.10;
-    if (roof) btu *= 1.12;
-    btu += Math.max(0, people - 2) * 600;      // about 600 BTU/hr per extra body
-    btu += use.add;
-    btu = Math.round(btu / 500) * 500;
-
-    var pick = null;
-    for (var i = 0; i < SIZES.length; i++) { if (SIZES[i].btu >= btu) { pick = SIZES[i]; break; } }
-
-    var type;
-    if (btu > 60000) type = "More than one unit, or VRF";
-    else if (btu > 30000) type = "Ceiling cassette or ducted";
-    else if (useKey === "retail") type = "Cassette or wall split";
-    else type = "Wall-mounted split";
-
-    $("sz-btu").textContent = btu.toLocaleString("en-GB");
-    $("sz-area").textContent = area.toFixed(area < 10 ? 1 : 0) + " m\u00B2";
-    $("sz-type").textContent = type;
-    $("sz-unit").textContent = pick
-      ? "About a " + pick.hp + " unit"
-      : "Bigger than a single unit, so we would split the load";
-
-    var lines = [
-      "Hello HVAC Technical, I used the room sizer on your website.", "",
-      "Room: " + L + "m x " + W + "m (" + area.toFixed(1) + " m2)",
-      "Used as: " + use.label,
-      "Afternoon sun: " + sunSel.options[sunSel.selectedIndex].text,
-      "People: " + people,
-      "Large glazing: " + (glass ? "yes" : "no"),
-      "Roof directly above: " + (roof ? "yes" : "no"), "",
-      "Estimate shown: " + btu.toLocaleString("en-GB") + " BTU/hr" + (pick ? ", about " + pick.hp : ""),
-      "Likely system: " + type, "",
-      "Please could you confirm this with a site assessment?"
-    ];
-    $("sz-send").href = "https://wa.me/233599333103?text=" + encodeURIComponent(lines.join("\n"));
   }
 
-  form.addEventListener("input", calc);
-  form.addEventListener("change", calc);
-  form.addEventListener("submit", function (e) { e.preventDefault(); });
-  calc();
+  function read(card) {
+    var q = function (k) { return card.querySelector('[data-k="' + k + '"]'); };
+    var sun = q("sun");
+    return {
+      name: q("name").value.trim(),
+      l: clampVal(q("l"), 1, 60, 4),
+      w: clampVal(q("w"), 1, 60, 4),
+      people: Math.round(clampVal(q("people"), 1, 80, 2)),
+      useKey: q("use").value,
+      sun: parseFloat(sun.value) || 1,
+      sunText: sun.options[sun.selectedIndex].text,
+      glass: q("glass").checked,
+      roof: q("roof").checked
+    };
+  }
+
+  function size(r) {
+    var use = USE[r.useKey] || USE.living;
+    var area = r.l * r.w;
+    var btu = area * 600 * use.k * r.sun;
+    if (r.glass) btu *= 1.10;
+    if (r.roof) btu *= 1.12;
+    btu += Math.max(0, r.people - 2) * 600;   // about 600 BTU/hr per extra body
+    btu += use.add;
+    btu = Math.round(btu / 500) * 500;
+    var pick = null;
+    for (var i = 0; i < SIZES.length; i++) { if (SIZES[i].btu >= btu) { pick = SIZES[i]; break; } }
+    return { area: area, btu: btu, pick: pick, useLabel: use.label };
+  }
+
+  function totals() {
+    var out = { rooms: [], btu: 0, area: 0, big: false, tally: {} };
+    cards().forEach(function (card, i) {
+      var r = read(card), s = size(r);
+      r.index = i + 1;
+      out.rooms.push({ r: r, s: s });
+      out.btu += s.btu;
+      out.area += s.area;
+      if (s.btu > 30000) out.big = true;
+      if (s.pick) out.tally[s.pick.hp] = (out.tally[s.pick.hp] || 0) + 1;
+    });
+    if (out.rooms.length >= 3 || out.btu > 48000) out.approach = "Multi-split or VRF worth pricing";
+    else if (out.big) out.approach = "Cassette or ducted";
+    else out.approach = "Individual wall splits";
+    return out;
+  }
+
+  function message() {
+    var t = totals(), L = [];
+    L.push("Hello HVAC Technical, I would like a quotation.", "");
+    L.push("Name: " + $("q-name").value.trim());
+    L.push("Phone: " + $("q-phone").value.trim());
+    if ($("q-email").value.trim()) L.push("Email: " + $("q-email").value.trim());
+    if ($("q-location").value.trim()) L.push("Location: " + $("q-location").value.trim());
+    L.push("Property: " + $("q-property").value);
+    L.push("Timing: " + $("q-when").value);
+    L.push("", "Rooms sized on your website:");
+    t.rooms.forEach(function (x) {
+      L.push(x.r.index + ". " + (x.r.name || "Room " + x.r.index) + " - " +
+        x.r.l + "m x " + x.r.w + "m, " + x.s.useLabel.toLowerCase() + ", " +
+        x.r.sunText.toLowerCase() + ", " + x.r.people + " people" +
+        (x.r.glass ? ", large windows" : "") + (x.r.roof ? ", roof above" : "") +
+        " -> " + fmt(x.s.btu) + " BTU" + (x.s.pick
+          ? ", about " + x.s.pick.hp + (x.s.btu > 30000 ? " of capacity, likely more than one unit" : "")
+          : ", over a single unit"));
+    });
+    L.push("", "Total: " + t.rooms.length + " room" + (t.rooms.length === 1 ? "" : "s") +
+      ", " + t.area.toFixed(0) + " m2, " + fmt(t.btu) + " BTU/hr");
+    L.push("Likely approach: " + t.approach);
+    if ($("q-notes").value.trim()) L.push("", "Notes: " + $("q-notes").value.trim());
+    L.push("", "Please confirm the sizing on site and send a quotation.");
+    return L.join("\n");
+  }
+
+  function refresh() {
+    var t = totals(), list_ = cards();
+    list_.forEach(function (card, i) {
+      var x = t.rooms[i];
+      card.querySelector('[data-out="btu"]').textContent = fmt(x.s.btu);
+      // past about 30,000 BTU nobody hangs one box on the wall, so say "of
+      // capacity" rather than let the HP read as a single unit
+      card.querySelector('[data-out="hp"]').textContent = x.s.pick
+        ? "/ " + x.s.pick.hp + (x.s.btu > 30000 ? " of capacity" : "")
+        : "/ over a single unit";
+      card.querySelector('[data-k="name"]').placeholder = "Room " + (i + 1);
+      card.querySelector("[data-del]").disabled = list_.length < 2;
+    });
+    $("sum-btu").textContent = fmt(t.btu);
+    $("sum-rooms").textContent = String(list_.length);
+    $("sum-area").textContent = t.area.toFixed(t.area < 10 ? 1 : 0) + " m\u00B2";
+    $("sum-approach").textContent = t.approach;
+    var units = SIZES.filter(function (s) { return t.tally[s.hp]; })
+      .map(function (s) { return t.tally[s.hp] + " x " + s.hp; }).join(", ");
+    $("sum-units").textContent = units || "Over single-unit sizes";
+    $("sum-sr").textContent = list_.length + " rooms, " + fmt(t.btu) + " BTU per hour in total";
+    $("q-mail").href = "mailto:info@hvactechnicalgh.com?subject=" +
+      encodeURIComponent("Quotation request from the website") + "&body=" + encodeURIComponent(message());
+  }
+
+  function addRoom() {
+    if (cards().length >= MAX_ROOMS) return null;
+    var node = tpl.content.firstElementChild.cloneNode(true);
+    list.appendChild(node);
+    var full = cards().length >= MAX_ROOMS;
+    $("add-room").hidden = full;
+    $("room-cap").hidden = !full;
+    refresh();
+    return node;
+  }
+
+  list.addEventListener("input", refresh);
+  list.addEventListener("change", refresh);
+  list.addEventListener("click", function (e) {
+    var del = e.target.closest ? e.target.closest("[data-del]") : null;
+    if (!del || del.disabled) return;
+    var card = del.closest(".room");
+    if (cards().length < 2) return;
+    var neighbour = card.nextElementSibling || card.previousElementSibling;
+    card.remove();
+    $("add-room").hidden = false;
+    $("room-cap").hidden = true;
+    refresh();
+    if (neighbour) { var f = neighbour.querySelector('[data-k="l"]'); if (f) f.focus(); }
+  });
+  $("add-room").addEventListener("click", function () {
+    var node = addRoom();
+    if (node) { var f = node.querySelector('[data-k="name"]'); if (f) f.focus(); }
+  });
+
+  var form = $("quote-form");
+  var status = form.querySelector(".form__status");
+  form.addEventListener("input", refresh);
+  form.addEventListener("change", refresh);
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var missing = [];
+    if (!$("q-name").value.trim()) missing.push($("q-name"));
+    if (!$("q-phone").value.trim()) missing.push($("q-phone"));
+    if (missing.length) {
+      status.textContent = "Please add your name and phone number so we can reply to you.";
+      missing[0].focus();
+      return;
+    }
+    window.open("https://wa.me/233599333103?text=" + encodeURIComponent(message()), "_blank", "noopener");
+    status.textContent = "Opening WhatsApp with your rooms attached. If nothing happened, call 059 933 3103.";
+  });
+
+  addRoom();   // start with one room ready to fill in
 })();
