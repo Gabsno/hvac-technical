@@ -352,27 +352,156 @@
   }
 
   /* ---- clients rail ----
-     Swipe, trackpad and arrow keys are native to the scroll container; these
-     buttons are for a desktop mouse, and dim when there is no further to go. */
+     It drifts on its own, but the visitor can take over whenever: swipe on
+     touch, two-finger on a trackpad, arrow keys, or the buttons that surface
+     on hover. The logo set is duplicated in the markup so the drift loops with
+     no seam, and scrollLeft wraps at the halfway mark where it repeats. */
   var rail = document.getElementById("client-rail");
-  var railNav = document.querySelector(".rail__nav");
-  if (rail && railNav) {
-    var prevBtn = railNav.querySelector('[data-rail="prev"]');
-    var nextBtn = railNav.querySelector('[data-rail="next"]');
-    var step = function () { return Math.max(rail.clientWidth * 0.8, 200); };
-    var sync = function () {
-      var max = rail.scrollWidth - rail.clientWidth;
-      prevBtn.disabled = rail.scrollLeft < 4;
-      nextBtn.disabled = rail.scrollLeft > max - 4;
+  if (rail) {
+    var track = rail.querySelector(".rail__track");
+    var SPEED = 42;                                  // px per second
+    var paused = false, touching = false, smoothUntil = 0, idle = 0, last = 0;
+    var half = function () { return track ? track.scrollWidth / 2 : 0; };
+    var hold = function (ms) {                       // visitor took over; drift resumes after a beat
+      paused = true;
+      clearTimeout(idle);
+      idle = setTimeout(function () { paused = false; }, ms || 2600);
     };
-    var nudge = function (dir) {
-      rail.scrollBy({ left: dir * step(), behavior: reduce ? "auto" : "smooth" });
-    };
-    prevBtn.addEventListener("click", function () { nudge(-1); });
-    nextBtn.addEventListener("click", function () { nudge(1); });
-    rail.addEventListener("scroll", sync, { passive: true });
-    window.addEventListener("resize", sync, { passive: true });
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(sync);
-    sync();
+    if (!reduce) {
+      // scrollLeft only stores whole pixels, so a sub-pixel step read back from
+      // the element rounds straight off again and the drift stalls on a fast
+      // display. Keep the real position here as a float and let the element round.
+      var pos = rail.scrollLeft;
+      var frame = function (t) {
+        if (!last) last = t;
+        var dt = Math.min(t - last, 50);             // ignore the gap after a background tab
+        last = t;
+        var h = half();
+        if (Math.abs(rail.scrollLeft - pos) > 2) pos = rail.scrollLeft;   // a swipe, key or arrow moved it
+        if (!touching && t > smoothUntil && h) {     // never wrap mid-drag or mid-smooth-scroll
+          if (pos >= h) { pos -= h; rail.scrollLeft = pos; }
+          else if (pos < 0) { pos += h; rail.scrollLeft = pos; }
+        }
+        if (!paused && !document.hidden) {
+          pos += SPEED * dt / 1000;
+          rail.scrollLeft = pos;
+        }
+        requestAnimationFrame(frame);
+      };
+      requestAnimationFrame(frame);
+
+      ["wheel", "keydown"].forEach(function (ev) {
+        rail.addEventListener(ev, function () { hold(); }, { passive: true });
+      });
+      rail.addEventListener("touchstart", function () { touching = true; hold(); }, { passive: true });
+      rail.addEventListener("touchend", function () { touching = false; hold(); }, { passive: true });
+      rail.addEventListener("touchcancel", function () { touching = false; hold(); }, { passive: true });
+      rail.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") { clearTimeout(idle); paused = true; } });
+      rail.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") hold(400); });
+      rail.addEventListener("focusin", function () { clearTimeout(idle); paused = true; });
+      rail.addEventListener("focusout", function () { hold(400); });
+      document.addEventListener("visibilitychange", function () { last = 0; });
+    }
+
+    // Arrows page across. There is no end to reach, so they never disable: going
+    // back past the start jumps forward by one identical set first, invisibly.
+    var page = function () { return Math.max(rail.clientWidth * 0.7, 200); };
+    document.querySelectorAll("[data-rail]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var dir = btn.getAttribute("data-rail") === "next" ? 1 : -1;
+        hold(3600);
+        var h = half();
+        if (dir < 0 && h && rail.scrollLeft - page() < 0) rail.scrollLeft += h;
+        smoothUntil = performance.now() + 800;
+        rail.scrollBy({ left: dir * page(), behavior: reduce ? "auto" : "smooth" });
+      });
+    });
   }
+})();
+
+
+/* Room sizer (services page).
+   An indicative cooling load, not a design. 600 BTU/hr per square metre is the
+   usual tropical starting point for a room of normal ceiling height; the rest
+   adjusts for how hard that room has to work. A real figure comes from a
+   heat-load calculation on site, which the copy says plainly. */
+(function () {
+  "use strict";
+  var form = document.getElementById("sizer-form");
+  if (!form) return;
+  var $ = function (id) { return document.getElementById(id); };
+
+  // Capacities as they are actually sold in Ghana, against the HP people ask for
+  var SIZES = [
+    { btu: 9000, hp: "1 HP" }, { btu: 12000, hp: "1.5 HP" }, { btu: 18000, hp: "2 HP" },
+    { btu: 24000, hp: "2.5 HP" }, { btu: 30000, hp: "3 HP" }, { btu: 36000, hp: "4 HP" },
+    { btu: 48000, hp: "5 HP" }, { btu: 60000, hp: "6 HP" }
+  ];
+  var USE = {
+    bedroom: { k: 0.95, add: 0,    label: "Bedroom" },
+    living:  { k: 1.00, add: 0,    label: "Living room" },
+    office:  { k: 1.05, add: 0,    label: "Office" },
+    retail:  { k: 1.15, add: 0,    label: "Shop or restaurant" },
+    kitchen: { k: 1.00, add: 4000, label: "Kitchen" }   // cooking equipment
+  };
+
+  var clamp = function (el, min, max, dflt) {
+    var v = parseFloat(el.value);
+    if (!isFinite(v)) return dflt;
+    return Math.min(Math.max(v, min), max);
+  };
+
+  function calc() {
+    var L = clamp($("sz-length"), 1, 60, 4);
+    var W = clamp($("sz-width"), 1, 60, 4);
+    var people = Math.round(clamp($("sz-people"), 1, 80, 2));
+    var useKey = $("sz-use").value;
+    var use = USE[useKey] || USE.living;
+    var sunSel = $("sz-sun");
+    var sun = parseFloat(sunSel.value) || 1;
+    var glass = $("sz-glass").checked, roof = $("sz-roof").checked;
+    var area = L * W;
+
+    var btu = area * 600 * use.k * sun;
+    if (glass) btu *= 1.10;
+    if (roof) btu *= 1.12;
+    btu += Math.max(0, people - 2) * 600;      // about 600 BTU/hr per extra body
+    btu += use.add;
+    btu = Math.round(btu / 500) * 500;
+
+    var pick = null;
+    for (var i = 0; i < SIZES.length; i++) { if (SIZES[i].btu >= btu) { pick = SIZES[i]; break; } }
+
+    var type;
+    if (btu > 60000) type = "More than one unit, or VRF";
+    else if (btu > 30000) type = "Ceiling cassette or ducted";
+    else if (useKey === "retail") type = "Cassette or wall split";
+    else type = "Wall-mounted split";
+
+    $("sz-btu").textContent = btu.toLocaleString("en-GB");
+    $("sz-area").textContent = area.toFixed(area < 10 ? 1 : 0) + " m\u00B2";
+    $("sz-type").textContent = type;
+    $("sz-unit").textContent = pick
+      ? "About a " + pick.hp + " unit"
+      : "Bigger than a single unit, so we would split the load";
+
+    var lines = [
+      "Hello HVAC Technical, I used the room sizer on your website.", "",
+      "Room: " + L + "m x " + W + "m (" + area.toFixed(1) + " m2)",
+      "Used as: " + use.label,
+      "Afternoon sun: " + sunSel.options[sunSel.selectedIndex].text,
+      "People: " + people,
+      "Large glazing: " + (glass ? "yes" : "no"),
+      "Roof directly above: " + (roof ? "yes" : "no"), "",
+      "Estimate shown: " + btu.toLocaleString("en-GB") + " BTU/hr" + (pick ? ", about " + pick.hp : ""),
+      "Likely system: " + type, "",
+      "Please could you confirm this with a site assessment?"
+    ];
+    $("sz-send").href = "https://wa.me/233599333103?text=" + encodeURIComponent(lines.join("\n"));
+  }
+
+  form.addEventListener("input", calc);
+  form.addEventListener("change", calc);
+  form.addEventListener("submit", function (e) { e.preventDefault(); });
+  calc();
 })();

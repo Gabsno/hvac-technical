@@ -72,14 +72,31 @@ https://gabsno.github.io/hvac-technical/ (repo Gabsno/hvac-technical, deploys fr
   drifts as it passes; a light sweeps the primary button on hover; the form lifts
   towards the focused field.
 
-- The clients strip is a rail the visitor drives, not an auto-playing marquee:
-  a native `overflow-x` scroller, so swipe, trackpad and arrow keys all work for
-  free, with buttons for a desktop mouse that dim at each end. The duplicate set
-  of logos the old infinite loop needed is gone, so it is 12 items, not 24.
-  Client logos are full colour everywhere now, on the rail and on the
-  about/work grids.
+- The clients strip still drifts on its own, but it is now a native
+  `overflow-x` scroller rather than a CSS transform, so the visitor can take
+  over at any moment: swipe on touch, two-finger on a trackpad, arrow keys, or
+  the two buttons that fade in on hover. It pauses while hovered, focused or
+  being touched, and picks the drift back up a couple of seconds later. The
+  logo set is duplicated in the markup so the loop has no seam, with the second
+  pass `aria-hidden` so screen readers hear 12 clients, not 24. Logos are full
+  colour, here and on the about/work grids.
+- Services carries a room sizer: floor area, use, sun, occupancy and two
+  checkboxes give an indicative BTU/hr and the nearest HP, ending in a WhatsApp
+  message with the figures already written out. 600 BTU/hr per square metre is
+  the tropical starting point, adjusted for use, sun, glazing, roof above and
+  bodies in the room, then matched to the capacities actually sold in Ghana
+  (1 HP = 9,000 BTU up to 6 HP = 60,000). Above 30,000 it stops recommending a
+  wall split. It is deliberately framed as a guide, not a specification, because
+  a real figure needs a heat-load calculation on site.
 
-Two things to know if you touch the motion. The FAQ panel lives inside
+Three things to know if you touch the motion.
+
+`scrollLeft` stores whole pixels only. The rail's drift keeps its real position
+in a float alongside the element and writes that in; read the value back off the
+element and add to it instead, and on a fast display each sub-pixel step rounds
+straight off again and the strip sits still.
+
+ The FAQ panel lives inside
 `<details>`, which is not rendered while closed, so the height has no computed
 value to ease from: `main.js` forces a layout flush (`void body.offsetHeight`)
 between the start and end values. Remove it and the panel jumps. And a closed

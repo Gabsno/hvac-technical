@@ -249,22 +249,9 @@ body::after {
    Clients rail: the visitor drives it. Swipe on touch, two-finger on a
    trackpad, arrows or arrow keys on a desktop mouse. Logos in full colour.
    -------------------------------------------------------------------------- */
-.rail__head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin: 3.5rem 0 1.4rem; }
-.rail__nav { display: flex; gap: 0.5rem; }
-.rail__btn {
-  width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line-2);
-  display: grid; place-items: center; color: var(--text);
-  transition: background-color 0.2s var(--ease), border-color 0.2s var(--ease), opacity 0.2s var(--ease), transform 0.2s var(--ease);
-}
-.rail__btn:hover:not(:disabled) { background: rgba(185, 211, 234, 0.1); border-color: var(--sky); }
-.rail__btn:active:not(:disabled) { transform: scale(0.94); }
-.rail__btn:disabled { opacity: 0.28; cursor: default; }
-.rail__btn .icon { font-size: 18px; }
-.rail__btn[data-rail="prev"] .icon { transform: scaleX(-1); }   /* one arrow path, mirrored */
-
+.rail-wrap { position: relative; }
 .rail {
   overflow-x: auto; overscroll-behavior-x: contain;
-  scroll-snap-type: x proximity; scroll-padding-inline: var(--gutter);
   scrollbar-width: none; -ms-overflow-style: none;
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
           mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
@@ -275,10 +262,31 @@ body::after {
 .rail__item {
   flex: none; width: 180px; height: 92px; display: grid; place-items: center;
   background: #fff; border-radius: var(--r); padding: 1rem 1.4rem;
-  scroll-snap-align: center; transition: transform 0.3s var(--ease);
+  transition: transform 0.3s var(--ease);
 }
 .rail__item:hover { transform: translateY(-3px); }
 .rail__item img { max-height: 56px; width: auto; object-fit: contain; }
+
+/* Arrows surface on hover over the strip, and for keyboard focus. A touch
+   device has no hover, so there they stay out of the way and you just swipe. */
+.rail__btn {
+  position: absolute; top: 50%; z-index: 2; margin-top: -22px;
+  width: 44px; height: 44px; border-radius: 50%;
+  display: grid; place-items: center; color: var(--text);
+  background: rgba(7, 20, 38, 0.82); border: 1px solid var(--line-2);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.28s var(--ease), background-color 0.2s var(--ease), border-color 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.rail__btn--prev { left: calc(var(--gutter) - 10px); }
+.rail__btn--next { right: calc(var(--gutter) - 10px); }
+.rail__btn--prev .icon { transform: scaleX(-1); }   /* one arrow path, mirrored */
+.rail__btn .icon { font-size: 18px; }
+.rail-wrap:hover .rail__btn,
+.rail-wrap:focus-within .rail__btn { opacity: 1; pointer-events: auto; }
+.rail__btn:hover { background: var(--navy); border-color: var(--sky); }
+.rail__btn:active { transform: scale(0.94); }
+@media (hover: none) { .rail__btn { display: none; } }
 
 /* Static logo grid (inner pages), also full colour */
 .logos { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 0.8rem; }
@@ -674,3 +682,27 @@ body::after {
   .btn--primary::after { display: none; }
   .field:focus-within { transform: none; }
 }
+
+/* ==========================================================================
+   Room sizer (services page). An indicative cooling load from a few inputs,
+   ending in a WhatsApp message with the figures already filled in.
+   ========================================================================== */
+.sizer { display: grid; gap: 1.5rem; align-items: start; }
+@media (min-width: 900px) { .sizer { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: clamp(1.5rem, 3vw, 2.5rem); } }
+
+.sizer__form { display: grid; gap: 1rem; padding: clamp(1.4rem, 2.5vw, 2rem); border-radius: var(--r); background: var(--bg-1); border: 1px solid var(--line); }
+.sizer__legend { font-weight: 700; font-size: 0.88rem; }
+.field label.sizer__check { display: flex; align-items: center; gap: 0.6rem; font-weight: 500; font-size: 0.95rem; color: var(--text-2); cursor: pointer; padding: 0.2rem 0; }
+.field label.sizer__check input { width: 18px; height: 18px; flex: none; accent-color: var(--orange); cursor: pointer; }
+
+.sizer__out { display: grid; gap: 0.55rem; align-content: start; padding: clamp(1.4rem, 2.5vw, 2rem); border-radius: var(--r); background: var(--bg-2); border: 1px solid var(--line-2); }
+.sizer__btu { display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; }
+.sizer__btu strong { font-family: var(--font-display); font-weight: 700; font-size: clamp(2.6rem, 6vw, 4rem); line-height: 1; letter-spacing: -0.04em; color: var(--orange); font-variant-numeric: tabular-nums; }
+.sizer__btu span { font-size: 0.95rem; color: var(--text-2); }
+.sizer__unit { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.1rem, 1.7vw, 1.35rem); letter-spacing: -0.01em; }
+.sizer__meta { margin: 0.5rem 0 0; border-top: 1px solid var(--line); }
+.sizer__meta > div { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: 0.7rem 0; border-bottom: 1px solid var(--line); }
+.sizer__meta dt { color: var(--muted); font-size: 0.9rem; }
+.sizer__meta dd { margin: 0; font-weight: 600; font-size: 0.95rem; text-align: right; }
+.sizer__note { margin-top: 0.2rem; }
+.sizer__out .btn { margin-top: 0.7rem; justify-self: start; }
