@@ -44,7 +44,8 @@ https://gabsno.github.io/hvac-technical/ (repo Gabsno/hvac-technical, deploys fr
 - Type: Outfit (display, mirrors the rounded geometric "hvac" letterforms) and Manrope
   (body), loaded from Google Fonts.
 - Layout families on the home page: kinetic-type hero, clients rail, offset manifesto,
-  accordion services with a sticky image, numbered four-step process grid, five-cell
+  accordion services with a sticky image, numbered four-step process grid (no
+  photography, by design - see the repeats note below), five-cell
   bento, full-bleed photo band, the H-V-A-C acrostic, CTA footer.
 - Motion: line-mask hero reveal, CSS scroll-driven parallax and step reveals
   (progressive, `@supports animation-timeline`), IntersectionObserver fallback,
@@ -139,15 +140,25 @@ https://gabsno.github.io/hvac-technical/ (repo Gabsno/hvac-technical, deploys fr
   `retail-hoist` instead of `plant-internals`, and the work gallery dropped
   `retail-ahu` and `plant-internals`. If you add a tile photo somewhere else
   later, pick a different frame instead.
-- **The arithmetic, because repetition keeps resurfacing.** There are 17
-  photographs covering roughly 40 slots, so some reuse is unavoidable until the
-  client sends more. The rule now is that no photograph appears more than twice
-  on one page, and never twice in the same stretch of scrolling. The commercial
-  band on the home page moved from `team-drawings` to `work-panel` for exactly
-  this reason: `team-drawings` was appearing four times on the home page alone
-  (accordion row, the sticky frame beside it, a process card, then the band).
-  The accordion row and its sticky frame are deliberately the same picture —
-  that pair counts as one appearance.
+- **No photograph appears twice on the same page.** Not once, anywhere. An
+  earlier pass settled for "no more than twice per page" and that was the wrong
+  bar — a visitor notices the second showing immediately.
+  The arithmetic is why it kept coming back: the home page had **18 image slots
+  and there are 17 photographs**, three of them too small (597px and 709px wide)
+  to fill a large slot without going soft. Something always had to repeat. The
+  four process cards gave up their background photographs to close the gap —
+  they already carry the orange 01–04 numerals, and a quieter typographic step
+  list reads better between a photo-led accordion and a photo-led bento anyway.
+  The commercial band moved to `panel-meter`, which the accordion does not use.
+  Home page: 14 slots, 14 different photographs.
+  If the client sends more photography, the process cards are the obvious place
+  to put it back — the markup only needs an `<img>` returning to each `.pcard`.
+  One pair is deliberately the same file and is *not* a repeat: the accordion's
+  inline panel image and its sticky frame image. `.svc__panel img` is
+  `display: none` above 959px and `.svc__media` is hidden below it, so exactly
+  one of the two ever renders. Count what is rendered, not what is in the
+  markup — `scratchpad/dupes.js` does this by walking `document.images`,
+  skipping anything with no `offsetParent`, and resolving `currentSrc`.
   **The new frames arrived over WhatsApp, so they are already recompressed and
   capped at 1600px on the long edge.** That is why the hero tops out at 1600w
   rather than 1920w. Ask the client for the photographer's originals and re-run
@@ -298,7 +309,7 @@ Google Maps iframe on the contact page.
 
 | | initial load | full read |
 |---|---|---|
-| Home, mobile 390px DPR2 | **212 KB** | **937 KB** |
+| Home, mobile 390px DPR2 | **218 KB** | **943 KB** |
 | Home, desktop 1440px | **310 KB** | **887 KB** |
 | Work (6 sector photos + 8-photo gallery), mobile | 350 KB | 1155 KB |
 | Services, mobile | 368 KB | 522 KB |

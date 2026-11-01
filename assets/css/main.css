@@ -625,8 +625,11 @@ body::after {
    bought nothing and cost the visitor control of their own scrolling. */
 .process__cards { display: grid; gap: 1rem; counter-reset: step; }
 @media (min-width: 900px) { .process__cards { grid-template-columns: 1fr 1fr; gap: 1.2rem; } }
-.pcard { position: relative; min-height: 360px; border-radius: var(--r); overflow: hidden; background: var(--bg-2); display: flex; align-items: flex-end; isolation: isolate; }
-@media (min-width: 900px) { .pcard { min-height: min(440px, 46vh); } }
+/* These carried a background photograph until the home page ran out of
+   distinct ones; the numeral and the heading do the work now, so the card
+   sizes to its own text instead of holding up a 440px image. */
+.pcard { position: relative; border-radius: var(--r); overflow: hidden; background: var(--bg-2); display: flex; align-items: flex-end; isolation: isolate; border: 1px solid var(--line); }
+@media (min-width: 900px) { .pcard { min-height: 240px; } }
 .pcard img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; opacity: 0.6; transition: transform 0.9s var(--ease), opacity 0.6s var(--ease); }
 .pcard::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(7, 20, 38, 0.05) 20%, rgba(7, 20, 38, 0.92) 100%); }
 .pcard:hover img { transform: scale(1.04); opacity: 0.75; }
