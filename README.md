@@ -44,8 +44,8 @@ https://gabsno.github.io/hvac-technical/ (repo Gabsno/hvac-technical, deploys fr
 - Type: Outfit (display, mirrors the rounded geometric "hvac" letterforms) and Manrope
   (body), loaded from Google Fonts.
 - Layout families on the home page: kinetic-type hero, clients rail, offset manifesto,
-  accordion services with a sticky image, sticky-heading process, five-cell bento,
-  full-bleed photo band, the H-V-A-C acrostic, CTA footer.
+  accordion services with a sticky image, numbered four-step process grid, five-cell
+  bento, full-bleed photo band, the H-V-A-C acrostic, CTA footer.
 - Motion: line-mask hero reveal, CSS scroll-driven parallax and step reveals
   (progressive, `@supports animation-timeline`), IntersectionObserver fallback,
   magnetic primary buttons, cross-page View Transitions. All gated by
@@ -59,9 +59,16 @@ https://gabsno.github.io/hvac-technical/ (repo Gabsno/hvac-technical, deploys fr
   preloaded. No Google Fonts request, so no visitor IP reaches Google.
 - v3.2 energy layer: rotating headline word, light-blue/orange glow and drifting
   particle canvas over the hero, pointer parallax, count-up numbers, the values
-  section as a single orange colour block, a scroll-driven horizontal process pan
-  (desktop, Chromium/Safari 26+; vertical stack elsewhere), pointer spotlight on
-  tiles and cards, clip-path wipe reveals on large images.
+  section as a single orange colour block, pointer spotlight on tiles and cards,
+  clip-path wipe reveals on large images.
+- The process section used to be a scroll-driven horizontal pan: `.pan` was 320vh
+  tall with a sticky inner, so the page stopped moving for better than two screens
+  of scrolling while a row of four cards slid sideways. It was removed on
+  1 Nov 2026 because it took the visitor's scrolling away from them for no gain —
+  there are only four steps, and a 2x2 grid shows all of them at once. The classes
+  are now `.process` / `.process__pad` / `.process__inner` / `.process__cards`, and
+  each card is numbered by a CSS counter, since the row order was the only thing
+  that used to carry the sequence. **Do not reintroduce a scroll pin here.**
 - Logo: `assets/img/logo-dark.png` is the wordmark recoloured for navy backgrounds
   (white letters, original orange and light-blue arcs). `logo.png` is the source.
 - Photography: the client sent a professional shoot on 1 Nov 2026 (10 frames, in
@@ -71,6 +78,16 @@ https://gabsno.github.io/hvac-technical/ (repo Gabsno/hvac-technical, deploys fr
   `panel-testing` and `panel-meter`. `service-fan` and `team-four` are still the
   older frames from the profile PDF, kept because the group portrait and the
   fan-repair shot have no equivalent in the new set.
+  A second batch arrived the same evening: five candid phone photos from live
+  jobs — `retail-ahu`, `retail-hoist`, `vrf-service`, `steel-frame`,
+  `roof-channel`. They are lower quality than the commissioned shoot (960px or
+  597px wide, some motion blur) so they stay in the work gallery, which now runs
+  to 16 frames, rather than carrying a hero or a feature slot. What they add is
+  what the shoot does not have: evidence of real jobs in a customer's building,
+  including an air handling unit being swapped out inside a trading clothes shop.
+  `steel-frame` looks at first glance like a mirrored image because the logo on
+  the technician's back reads upside down — it is not mirrored, he is bent double.
+  Do not "fix" it by flipping; that would reverse the letterforms.
   The hero is the black-and-white frame of two technicians walking away from
   camera: it is monochrome and has no faces, so it sits under the headline
   without competing with it, and both branded coveralls read clearly.
@@ -141,7 +158,11 @@ All photography is WebP, sized to its actual display context, with a 700 / 950 /
 ladder in `srcset` and a `sizes` attribute measured from the real rendered width at
 1440px and 390px. The top tier's `w` descriptor is the file's real width (1600 for
 landscape frames, 1068 for portrait) — do not leave it at a round number the file
-does not actually have, or the browser picks the wrong tier. The five closed rows of
+does not actually have, or the browser picks the wrong tier. The five candid job
+photos also carry a 450w tier, because a gallery tile is only 47vw on a phone and two
+of those frames are 597px wide, so without it mobile pulled the whole file for a
+thumbnail; a tier within 10% of the file's own width is skipped instead, since a
+950w beside a 960w original is the same picture twice. The five closed rows of
 the services accordion carry `data-src` and are fetched only when their row is opened.
 Originals live in `assets/img/_original/` and are not served.
 
@@ -166,7 +187,7 @@ Google Maps iframe on the contact page.
 |---|---|---|
 | Home, mobile 390px DPR2 | **211 KB** | **881 KB** |
 | Home, desktop 1440px | **371 KB** | **821 KB** |
-| Work (11-photo gallery), mobile | 358 KB | 752 KB |
+| Work (16-photo gallery), mobile | 379 KB | 986 KB |
 | Services, mobile | 368 KB | 523 KB |
 | About, mobile | 222 KB | 385 KB |
 | Sizer, mobile | 164 KB | 164 KB |

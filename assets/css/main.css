@@ -571,28 +571,27 @@ body::after {
 .tile__body, .pcard__body { position: relative; z-index: 1; }
 
 /* Process: horizontal pan on capable desktops, vertical stack elsewhere */
-.pan { position: relative; background: var(--bg-0); --pad: max(var(--gutter), calc((100vw - var(--container)) / 2 + var(--gutter))); }
-.pan__sticky { padding-block: clamp(5rem, 10vw, 9rem); }
-.pan__inner { padding-inline: var(--pad); display: grid; gap: clamp(2rem, 4vw, 3rem); }
-.pan__cards { display: grid; gap: 1rem; }
+.process { position: relative; background: var(--bg-0); --pad: max(var(--gutter), calc((100vw - var(--container)) / 2 + var(--gutter))); }
+.process__pad { padding-block: clamp(5rem, 10vw, 9rem); }
+.process__inner { padding-inline: var(--pad); display: grid; gap: clamp(2rem, 4vw, 3rem); }
+/* The grid gap already separates the heading from the cards; the head's own
+   margin would stack on top of it. */
+.process__inner .head { margin-bottom: 0; }
+/* Four steps, shown all at once. This was a sticky horizontal pan that pinned
+   the page for 320vh while the row slid sideways; with only four cards that
+   bought nothing and cost the visitor control of their own scrolling. */
+.process__cards { display: grid; gap: 1rem; counter-reset: step; }
+@media (min-width: 900px) { .process__cards { grid-template-columns: 1fr 1fr; gap: 1.2rem; } }
 .pcard { position: relative; min-height: 360px; border-radius: var(--r); overflow: hidden; background: var(--bg-2); display: flex; align-items: flex-end; isolation: isolate; }
+@media (min-width: 900px) { .pcard { min-height: min(440px, 46vh); } }
 .pcard img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; opacity: 0.6; transition: transform 0.9s var(--ease), opacity 0.6s var(--ease); }
 .pcard::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(7, 20, 38, 0.05) 20%, rgba(7, 20, 38, 0.92) 100%); }
 .pcard:hover img { transform: scale(1.04); opacity: 0.75; }
 .pcard__body { padding: clamp(1.4rem, 2.5vw, 2rem); display: grid; gap: 0.6rem; }
+/* The row used to carry the sequence on its own; in a grid the steps say it. */
+.pcard__body::before { counter-increment: step; content: counter(step, decimal-leading-zero); font-family: var(--font-display); font-weight: 700; font-size: 0.9rem; letter-spacing: 0.1em; color: var(--orange); }
 .pcard h3 { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.6rem, 2.4vw, 2.2rem); letter-spacing: -0.03em; line-height: 1.05; }
 .pcard p { color: var(--text-2); max-width: 38ch; }
-@supports (animation-timeline: scroll()) {
-  @media (min-width: 960px) and (prefers-reduced-motion: no-preference) {
-    .pan { height: 320vh; view-timeline-name: --pan; view-timeline-axis: block; }
-    .pan__sticky { position: sticky; top: var(--nav-h); height: calc(100vh - var(--nav-h)); overflow: hidden; display: grid; align-content: center; padding-block: 0; }
-    .pan__inner .head { margin-bottom: 0; }
-    .pan__cards { display: flex; gap: 1.2rem; width: max-content; animation: pan linear both; animation-timeline: --pan; animation-range: contain 0% contain 100%; will-change: transform; }
-    .pcard { width: min(560px, 46vw); min-height: min(440px, 48vh); flex: none; }
-    @keyframes pan { to { transform: translateX(calc(100vw - 2 * var(--pad) - 100%)); } }
-  }
-}
-
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     .portrait, .entry__media, .masonry figure { animation: wipe linear both; animation-timeline: view(); animation-range: entry 5% entry 55%; }
