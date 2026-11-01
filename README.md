@@ -82,7 +82,7 @@ https://gabsno.github.io/hvac-technical/ (repo Gabsno/hvac-technical, deploys fr
   jobs — `retail-ahu`, `retail-hoist`, `vrf-service`, `steel-frame`,
   `roof-channel`. They are lower quality than the commissioned shoot (960px or
   597px wide, some motion blur) so they stay in the work gallery, which now runs
-  to 16 frames, rather than carrying a hero or a feature slot. What they add is
+  to 14 frames, rather than carrying a hero or a feature slot. What they add is
   what the shoot does not have: evidence of real jobs in a customer's building,
   including an air handling unit being swapped out inside a trading clothes shop.
   `steel-frame` looks at first glance like a mirrored image because the logo on
@@ -91,10 +91,19 @@ https://gabsno.github.io/hvac-technical/ (repo Gabsno/hvac-technical, deploys fr
   The hero is the black-and-white frame of two technicians walking away from
   camera: it is monochrome and has no faces, so it sits under the headline
   without competing with it, and both branded coveralls read clearly.
-  Still stock: the three sector interiors (`sector-retail`, `sector-offices`,
-  `sector-restaurants`) and `outdoor-unit`. They depict a *kind of space* or a
-  bare unit, which no frame in the new set does. Replace them if the client ever
-  sends a residential install and interiors of jobs they have done.
+  Still stock: two sector interiors (`sector-offices`, `sector-restaurants`) and
+  `outdoor-unit`. They depict a *kind of space* or a bare unit, which no frame in
+  the client's sets does. Replace them if the client ever sends a residential
+  install and interiors of finished jobs.
+- **Each of the five sector tiles owns its photo outright** — `retail-ahu`,
+  `sector-offices`, `sector-restaurants`, `plant-internals` and `outdoor-unit`
+  each appear exactly once on the whole site, on their own tile. Two of them used
+  to double as service imagery, which made the tiles feel like reruns of pictures
+  you had already scrolled past: the home accordion's Supply row took
+  `vrf-service` instead of `outdoor-unit`, the services page's Supply figure took
+  `retail-hoist` instead of `plant-internals`, and the work gallery dropped
+  `retail-ahu` and `plant-internals`. If you add a tile photo somewhere else
+  later, pick a different frame instead.
   **The new frames arrived over WhatsApp, so they are already recompressed and
   capped at 1600px on the long edge.** That is why the hero tops out at 1600w
   rather than 1920w. Ask the client for the photographer's originals and re-run
@@ -138,6 +147,20 @@ https://gabsno.github.io/hvac-technical/ (repo Gabsno/hvac-technical, deploys fr
   wall split. It is deliberately framed as a guide, not a specification, because
   a real figure needs a heat-load calculation on site.
 
+A grid trap worth knowing about, because it hid most of a section for weeks.
+`.bento` only defines `grid-template-areas` above 720px, but the five
+`.tile--*` rules that set `grid-area: retail` and friends were written outside
+that query. Below 720px those area names do not exist, so `grid-area: retail`
+resolved to line names that were never defined, all five tiles landed in the
+same implicit cell, and the bento collapsed to a single 254px tile — four of the
+five sectors were invisible on every phone, with only the last one painted on
+top. Nothing errored and every tile still reported a sensible
+`getBoundingClientRect()`; they simply all reported the *same* one, which is why
+sorting them by position looked correct. `document.elementFromPoint` on the
+middle of a tile is what caught it. The `grid-area` rules now live inside the
+same `@media (min-width: 720px)` block as the areas they reference — keep them
+together.
+
 Three things to know if you touch the motion.
 
 `scrollLeft` stores whole pixels only. The rail's drift keeps its real position
@@ -173,11 +196,14 @@ third-party. Home page on mobile (390px, DPR2):
 |---|---|---|
 | Start of the first session | 1626 KB | 3409 KB |
 | After the optimisation pass | 310 KB | 888 KB |
-| With the client's new photos | **211 KB** | **881 KB** |
-| | -87% | -74% |
+| With the client's new photos | **212 KB** | **937 KB** |
+| | -87% | -73% |
 
-The new photography made the page *lighter*, not heavier: the monochrome hero
-compresses to 10 KB at 700w where the old colour hero cost ~100 KB.
+The new photography made the *initial* load lighter, not heavier: the monochrome
+hero compresses to 10 KB at 700w where the old colour hero cost about 100 KB. The
+full read went up slightly against the previous pass only because fixing the
+bento grid bug means a phone now actually renders all five sector tiles instead
+of collapsing them into one.
 
 Third-party origins went from four (unpkg, fonts.googleapis, fonts.gstatic,
 images.unsplash) to none. The only remaining external request anywhere on the site is the
@@ -185,11 +211,11 @@ Google Maps iframe on the contact page.
 
 | | initial load | full read |
 |---|---|---|
-| Home, mobile 390px DPR2 | **211 KB** | **881 KB** |
-| Home, desktop 1440px | **371 KB** | **821 KB** |
-| Work (16-photo gallery), mobile | 379 KB | 986 KB |
-| Services, mobile | 368 KB | 523 KB |
-| About, mobile | 222 KB | 385 KB |
+| Home, mobile 390px DPR2 | **212 KB** | **937 KB** |
+| Home, desktop 1440px | **310 KB** | **887 KB** |
+| Work (14-photo gallery), mobile | 379 KB | 892 KB |
+| Services, mobile | 368 KB | 522 KB |
+| About, mobile | 222 KB | 386 KB |
 | Sizer, mobile | 164 KB | 164 KB |
 | Contact, mobile | **1938 KB** | 1977 KB |
 

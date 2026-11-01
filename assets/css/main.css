@@ -364,11 +364,17 @@ body::after {
 .tile__body { padding: 1.3rem; display: grid; gap: 0.25rem; }
 .tile__body h3 { font-family: var(--font-display); font-weight: 600; font-size: 1.3rem; letter-spacing: -0.02em; line-height: 1.15; }
 .tile__body p { color: var(--sky-2); font-size: 0.9rem; opacity: 0.85; }
-.tile--retail { grid-area: retail; }
-.tile--offices { grid-area: offices; }
-.tile--hosp { grid-area: hosp; }
-.tile--industrial { grid-area: industrial; }
-.tile--residential { grid-area: residential; }
+/* These must stay inside the same query as grid-template-areas. Named areas
+   only exist above 720px; below it `grid-area: retail` resolves to lines that
+   were never defined, every tile lands in the same implicit cell, and the five
+   sectors stack on top of each other with only the last one visible. */
+@media (min-width: 720px) {
+  .tile--retail { grid-area: retail; }
+  .tile--offices { grid-area: offices; }
+  .tile--hosp { grid-area: hosp; }
+  .tile--industrial { grid-area: industrial; }
+  .tile--residential { grid-area: residential; }
+}
 .tile--retail .tile__body h3 { font-size: clamp(1.5rem, 2.4vw, 2rem); }
 
 /* --------------------------------------------------------------------------
