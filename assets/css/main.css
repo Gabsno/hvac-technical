@@ -462,7 +462,13 @@ body::after {
    -------------------------------------------------------------------------- */
 .sectors { display: grid; border-top: 1px solid var(--line); }
 .sector { display: grid; gap: 0.6rem; padding: 1.6rem 0; border-bottom: 1px solid var(--line); scroll-margin-top: calc(var(--nav-h) + 1rem); }
-@media (min-width: 800px) { .sector { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 2rem; align-items: start; } }
+/* Heading, copy, then the sector's own photograph. Every sector anchor used to
+   land on the same gallery, so each one now carries a frame of its own. */
+@media (min-width: 800px) { .sector { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr) minmax(0, 0.9fr); gap: 2rem; align-items: start; } }
+.sector__media { margin: 0.4rem 0 0; border-radius: var(--r); overflow: hidden; background: var(--bg-2); }
+@media (min-width: 800px) { .sector__media { margin-top: 0; } }
+.sector__media img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; transition: transform 0.9s var(--ease); }
+.sector:hover .sector__media img { transform: scale(1.04); }
 .sector h3 { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.4rem, 2.4vw, 2rem); letter-spacing: -0.025em; line-height: 1.1; }
 .sector p { color: var(--text-2); max-width: 50ch; }
 .sector__names { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }

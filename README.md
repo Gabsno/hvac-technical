@@ -82,7 +82,7 @@ https://gabsno.github.io/hvac-technical/ (repo Gabsno/hvac-technical, deploys fr
   jobs — `retail-ahu`, `retail-hoist`, `vrf-service`, `steel-frame`,
   `roof-channel`. They are lower quality than the commissioned shoot (960px or
   597px wide, some motion blur) so they stay in the work gallery, which now runs
-  to 14 frames, rather than carrying a hero or a feature slot. What they add is
+  to 8 frames plus one photo per sector, rather than carrying a hero or a feature slot. What they add is
   what the shoot does not have: evidence of real jobs in a customer's building,
   including an air handling unit being swapped out inside a trading clothes shop.
   `steel-frame` looks at first glance like a mirrored image because the logo on
@@ -95,6 +95,20 @@ https://gabsno.github.io/hvac-technical/ (repo Gabsno/hvac-technical, deploys fr
   `outdoor-unit`. They depict a *kind of space* or a bare unit, which no frame in
   the client's sets does. Replace them if the client ever sends a residential
   install and interiors of finished jobs.
+- **Every sector on the work page carries its own photograph**, and the bento
+  tiles that link to them do too. Before this, all six sector anchors landed on
+  a short text block with the same undifferentiated gallery filling the screen
+  below, so `work.html#retail` and `work.html#offices` looked identical. The
+  frames were *moved out of* the gallery rather than added on top of it, so the
+  photo count did not change and nothing appears twice: `retail-hoist` to
+  retail, `panel-testing` to offices, `steel-frame` to public bodies,
+  `vrf-service` to hospitality, `roof-channel` to industrial, `work-ladder` to
+  residential. The gallery went 14 frames to 8.
+  Only retail has photography that genuinely shows its *kind of building* (both
+  frames are inside a trading clothes shop). The other five show the crew doing
+  the work the copy describes, and their alt text says so rather than claiming a
+  venue. Real photographs of a bank, a restaurant and a residential install are
+  the gap worth closing.
 - **Each of the five sector tiles owns its photo outright** — `retail-ahu`,
   `sector-offices`, `sector-restaurants`, `plant-internals` and `outdoor-unit`
   each appear exactly once on the whole site, on their own tile. Two of them used
@@ -104,6 +118,15 @@ https://gabsno.github.io/hvac-technical/ (repo Gabsno/hvac-technical, deploys fr
   `retail-hoist` instead of `plant-internals`, and the work gallery dropped
   `retail-ahu` and `plant-internals`. If you add a tile photo somewhere else
   later, pick a different frame instead.
+- **The arithmetic, because repetition keeps resurfacing.** There are 17
+  photographs covering roughly 40 slots, so some reuse is unavoidable until the
+  client sends more. The rule now is that no photograph appears more than twice
+  on one page, and never twice in the same stretch of scrolling. The commercial
+  band on the home page moved from `team-drawings` to `work-panel` for exactly
+  this reason: `team-drawings` was appearing four times on the home page alone
+  (accordion row, the sticky frame beside it, a process card, then the band).
+  The accordion row and its sticky frame are deliberately the same picture —
+  that pair counts as one appearance.
   **The new frames arrived over WhatsApp, so they are already recompressed and
   capped at 1600px on the long edge.** That is why the hero tops out at 1600w
   rather than 1920w. Ask the client for the photographer's originals and re-run
@@ -256,7 +279,7 @@ Google Maps iframe on the contact page.
 |---|---|---|
 | Home, mobile 390px DPR2 | **212 KB** | **937 KB** |
 | Home, desktop 1440px | **310 KB** | **887 KB** |
-| Work (14-photo gallery), mobile | 379 KB | 892 KB |
+| Work (6 sector photos + 8-photo gallery), mobile | 350 KB | 1155 KB |
 | Services, mobile | 368 KB | 522 KB |
 | About, mobile | 222 KB | 386 KB |
 | Sizer, mobile | 164 KB | 164 KB |
