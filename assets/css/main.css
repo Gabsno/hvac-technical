@@ -729,12 +729,15 @@ body::after {
 #sizer { padding-top: clamp(0.5rem, 1.5vw, 1.5rem); }
 
 /* Room-by-room builder: a list of rooms on the left, the running total beside it */
-.builder { display: grid; gap: 1.5rem; align-items: start; }
+/* minmax(0, 1fr) rather than the default auto track: a room card's head row
+   (name input + nowrap result + delete) has a max-content width wider than a
+   phone, and nested auto grids pass that straight up and overflow the page. */
+.builder { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem; align-items: start; }
 @media (min-width: 1000px) {
   .builder { grid-template-columns: minmax(0, 1fr) 340px; gap: clamp(1.5rem, 3vw, 2.5rem); }
   .builder__side { position: sticky; top: calc(var(--nav-h) + 1.5rem); }
 }
-.rooms { display: grid; gap: 1rem; margin-bottom: 1.2rem; }
+.rooms { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; margin-bottom: 1.2rem; }
 .room { padding: clamp(1rem, 2vw, 1.4rem); border-radius: var(--r); background: var(--bg-1); border: 1px solid var(--line); }
 .room__head { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.9rem; }
 .room__name {

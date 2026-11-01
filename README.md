@@ -20,7 +20,8 @@ site-v3/
   contact.html      Contact details, WhatsApp quote form, Google Maps embed
   assets/css/main.css
   assets/js/main.js
-  assets/img/       Team photos extracted from the profile PDF, logo, favicon
+  assets/img/       The client's 1 Nov 2026 photo shoot, two older frames from the
+                    profile PDF, three stock sector interiors, logo, favicon
   assets/img/clients/  12 client logos cropped from the profile PDF at 300 DPI
 ```
 
@@ -63,8 +64,24 @@ https://gabsno.github.io/hvac-technical/ (repo Gabsno/hvac-technical, deploys fr
   tiles and cards, clip-path wipe reveals on large images.
 - Logo: `assets/img/logo-dark.png` is the wordmark recoloured for navy backgrounds
   (white letters, original orange and light-blue arcs). `logo.png` is the source.
-- The wall-mounted outdoor unit and the condenser bank are Unsplash photos; the
-  rest of the photography is the client team from the profile PDF.
+- Photography: the client sent a professional shoot on 1 Nov 2026 (10 frames, in
+  `../New Images/`). It now carries the hero and every service, process and
+  gallery slot. Those ten are `hero-crew`, `install-cassette`, `service-condensers`,
+  `team-drawings`, `work-panel`, `tech-rooftop`, `work-ladder`, `plant-internals`,
+  `panel-testing` and `panel-meter`. `service-fan` and `team-four` are still the
+  older frames from the profile PDF, kept because the group portrait and the
+  fan-repair shot have no equivalent in the new set.
+  The hero is the black-and-white frame of two technicians walking away from
+  camera: it is monochrome and has no faces, so it sits under the headline
+  without competing with it, and both branded coveralls read clearly.
+  Still stock: the three sector interiors (`sector-retail`, `sector-offices`,
+  `sector-restaurants`) and `outdoor-unit`. They depict a *kind of space* or a
+  bare unit, which no frame in the new set does. Replace them if the client ever
+  sends a residential install and interiors of jobs they have done.
+  **The new frames arrived over WhatsApp, so they are already recompressed and
+  capped at 1600px on the long edge.** That is why the hero tops out at 1600w
+  rather than 1920w. Ask the client for the photographer's originals and re-run
+  the encode for a sharper hero.
 - v3.3 motion pass: section headings arrive a word at a time (JS wraps each word,
   the wrapper is the mask, the existing `.reveal` observer triggers it); the FAQ
   eases open instead of snapping; the bar shrinks 72px to 60px once the page moves
@@ -122,18 +139,24 @@ open from closed; hit-test with `elementFromPoint` instead.
 
 All photography is WebP, sized to its actual display context, with a 700 / 950 / full
 ladder in `srcset` and a `sizes` attribute measured from the real rendered width at
-1440px and 390px. The five closed rows of the services accordion carry `data-src` and are
-fetched only when their row is opened. Originals live in `assets/img/_original/` and are
-not served.
+1440px and 390px. The top tier's `w` descriptor is the file's real width (1600 for
+landscape frames, 1068 for portrait) — do not leave it at a round number the file
+does not actually have, or the browser picks the wrong tier. The five closed rows of
+the services accordion carry `data-src` and are fetched only when their row is opened.
+Originals live in `assets/img/_original/` and are not served.
 
 Measured in headless Edge, cold cache, counting every response body including
 third-party. Home page on mobile (390px, DPR2):
 
 | | initial load | full read |
 |---|---|---|
-| Start of the session | 1626 KB | 3409 KB |
-| Now | **310 KB** | **888 KB** |
-| | -81% | -74% |
+| Start of the first session | 1626 KB | 3409 KB |
+| After the optimisation pass | 310 KB | 888 KB |
+| With the client's new photos | **211 KB** | **881 KB** |
+| | -87% | -74% |
+
+The new photography made the page *lighter*, not heavier: the monochrome hero
+compresses to 10 KB at 700w where the old colour hero cost ~100 KB.
 
 Third-party origins went from four (unpkg, fonts.googleapis, fonts.gstatic,
 images.unsplash) to none. The only remaining external request anywhere on the site is the
@@ -141,9 +164,19 @@ Google Maps iframe on the contact page.
 
 | | initial load | full read |
 |---|---|---|
-| Home, mobile 390px DPR2 | 1343 KB to **256 KB** | 3130 KB to **837 KB** |
-| Home, desktop 1440px | 1462 KB to **406 KB** | 3130 KB to **905 KB** |
-| All five pages, mobile | 2843 KB to **850 KB** | 7724 KB to **2425 KB** |
+| Home, mobile 390px DPR2 | **211 KB** | **881 KB** |
+| Home, desktop 1440px | **371 KB** | **821 KB** |
+| Work (11-photo gallery), mobile | 358 KB | 752 KB |
+| Services, mobile | 368 KB | 523 KB |
+| About, mobile | 222 KB | 385 KB |
+| Sizer, mobile | 164 KB | 164 KB |
+| Contact, mobile | **1938 KB** | 1977 KB |
+
+**The contact page is the one outlier, and it is entirely the Google Maps iframe**
+(~1.8 MB of Google's own JS and tiles). It already carries `loading="lazy"`, but the
+map sits inside Chromium's lazy-load threshold on a phone, so it loads anyway. If that
+matters, swap the iframe for a click-to-load placeholder — the street address and an
+"Open in Google Maps" link are already on the page, so nothing is lost.
 
 The unpkg icon webfont was 220 KB for five glyphs. Self-hosting the fonts saved only about
 13 KB of bytes, but removed two third-party origins from the critical path: the browser no
@@ -183,6 +216,12 @@ so they are correct the moment DNS moves.
    and avoids a specific year. Add one if they want it.
 5. **Client logos** are cropped from the PDF. Ask the client for original logo files for a
    crisper wall.
+5b. **Photographer's originals** of the 1 Nov shoot — what we have came through
+   WhatsApp at 1600px and is already recompressed. The hero is the frame that would
+   benefit most.
+5c. **A residential install and some finished interiors.** The three sector tiles and
+   the `outdoor-unit` frame are the last stock images on the site; one afternoon with
+   a camera at a finished job would retire them.
 6. **Quote form** opens WhatsApp with the message pre-filled (no backend needed).
    If they prefer email delivery, point the form at Formspree/Resend.
 
