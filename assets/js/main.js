@@ -604,3 +604,31 @@
 
   addRoom();   // start with one room ready to fill in
 })();
+
+/* ---------------------------------------------------------------------------
+   The floating WhatsApp button sits fixed over the bottom-right corner, which
+   on a phone lands on top of form controls: a text input, a select and the
+   textarea on both the sizer and the contact form. Tapping the right edge of
+   one of those opened WhatsApp instead of the field. Hide it while a form is
+   on screen - every form here ends in its own WhatsApp action, so the route is
+   never lost.
+   --------------------------------------------------------------------------- */
+(function () {
+  var fab = document.querySelector(".wa-float");
+  if (!fab || !("IntersectionObserver" in window)) return;
+  var forms = document.querySelectorAll("form, .builder");
+  if (!forms.length) return;
+
+  // Track the set rather than a counter: an observer can report the same
+  // target twice and a counter would drift out of step with reality.
+  var onScreen = new Set();
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) onScreen.add(e.target);
+      else onScreen.delete(e.target);
+    });
+    fab.classList.toggle("is-hidden", onScreen.size > 0);
+  }, { rootMargin: "0px 0px -10% 0px" });
+
+  forms.forEach(function (f) { io.observe(f); });
+})();

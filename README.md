@@ -161,6 +161,49 @@ middle of a tile is what caught it. The `grid-area` rules now live inside the
 same `@media (min-width: 720px)` block as the areas they reference — keep them
 together.
 
+## Mobile audit, 1 Nov 2026
+
+A sweep of all six pages at 390px after the bento bug, looking for faults of the
+same kind: things that do not throw, do not overflow and do not show up in a
+screenshot you are not staring at. What it found and what was done:
+
+- **The floating WhatsApp button sat on top of form controls.** It is fixed to
+  the bottom-right corner, and on a phone that corner lands on a text input, a
+  select and the textarea on *both* the sizer and the contact form — tapping the
+  right-hand edge of one of those opened WhatsApp instead of the field. `main.js`
+  now hides it while a `form` or `.builder` is on screen. Nothing is lost: both
+  forms end in their own WhatsApp action. Verified by hit-testing three points on
+  the button every 300px down each page: sizer went from 8 covered elements
+  (4 interactive) to 0, contact from 6 (3 interactive) to 1 non-interactive.
+  It still clips the corner of a bento tile and of one accordion row's plus icon
+  on the pages that have no form; those are large targets and the rest of each
+  one still works, so it was left alone.
+- **Fragment links landed under the fixed bar.** `#main` — the "Skip to content"
+  link, on all six pages — put the top of `<main>` 60px beneath the bar, and
+  `sizer#quote` was 72px under, i.e. completely hidden. A `:target` rule now
+  carries a default `scroll-margin-top`, declared before the per-component rules
+  so `.entry`, `.sector` and `.form` keep their own.
+- **Tap targets.** The sizer's room checkboxes were 16px, and the contact page's
+  phone and email links — the whole point of that page on a phone — were 30px
+  tall. Checkbox rows are now 44px with the whole label as the target, the delete
+  button went 34px to 40px, contact rows are 44px, and standalone text links get
+  44px under `@media (pointer: coarse)` only, so desktop spacing is untouched.
+  Flagged elements per page went 10/3/2/2/7/7 down to 1/1/1/1/4/1.
+
+Checked and found to be fine, so do not go chasing them again: the `.hero` and
+`.band` sections report `scrollHeight > clientHeight`, but that is the oversized
+parallax photo layer and the lowest line of text sits 43px and 111px clear of the
+bottom; the zero-height `div`s inside `.svc__panel` are the five closed accordion
+rows; `a.sr-only` reporting as clipped is the screen-reader skip link, which is
+meant to be 1px; and the footer legal line is not cut off, that was a frame
+boundary in the filmstrip the audit screenshots were composed into.
+
+One trap worth repeating, because it wasted a cycle here. If you hit-test the
+floating button with `elementsFromPoint` to prove it covers nothing, handle the
+case where it is *hidden*: it drops out of hit-testing, `indexOf` returns -1, and
+`slice(-1 + 1)` hands back the whole stack, so every field underneath gets
+reported as covered and the fix looks like it did nothing.
+
 Three things to know if you touch the motion.
 
 `scrollLeft` stores whole pixels only. The rail's drift keeps its real position

@@ -127,6 +127,11 @@ body::after {
 /* --------------------------------------------------------------------------
    Layout
    -------------------------------------------------------------------------- */
+/* Safety net for fragment links: the bar is fixed, so without this a jump to
+   #main or #quote puts the top of the target underneath it. Declared before
+   the per-component rules so .entry / .sector / .form keep their own values. */
+:target { scroll-margin-top: calc(var(--nav-h) + 1.5rem); }
+
 .container { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
 .section { padding-block: clamp(5rem, 10vw, 9rem); position: relative; }
 .section--raised { background: var(--bg-1); }
@@ -166,6 +171,11 @@ body::after {
   padding-bottom: 2px;
 }
 .link:hover { background-size: 100% 1px; }
+/* Standalone text links sit at about 28px, which is a small target for a thumb.
+   Only on coarse pointers, so desktop spacing is unchanged. */
+@media (pointer: coarse) {
+  .link, .footer__cta-actions a.plain { min-height: 44px; }
+}
 .link .icon { font-size: 1.1em; transition: transform 0.3s var(--ease); }
 .link:hover .icon { transform: translateX(3px); }
 
@@ -472,6 +482,9 @@ body::after {
 .details li { display: grid; gap: 0.15rem; padding: 1.1rem 0; border-bottom: 1px solid var(--line); }
 .details span { font-size: 0.85rem; color: var(--muted); }
 .details a, .details p { font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; letter-spacing: -0.01em; }
+/* The phone and email rows are the point of this page on a phone; give them a
+   full-height target rather than the 30px the text alone occupies. */
+.details a { display: inline-flex; align-items: center; min-height: 44px; }
 .details a:hover { color: var(--sky); }
 .form { display: grid; gap: 1rem; padding: clamp(1.5rem, 3vw, 2.5rem); border-radius: var(--r); background: var(--bg-1); border: 1px solid var(--line); scroll-margin-top: calc(var(--nav-h) + 1.5rem); }
 .form__row { display: grid; gap: 1rem; }
@@ -516,6 +529,10 @@ body::after {
 
 .wa-float { position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 40; width: 56px; height: 56px; border-radius: 50%; background: #25d366; color: #063d1f; display: grid; place-items: center; font-size: 30px; box-shadow: 0 14px 30px -10px rgba(37, 211, 102, 0.6); transition: transform 0.3s var(--ease); }
 .wa-float:hover { transform: translateY(-3px) scale(1.04); }
+/* Fixed over the bottom-right corner, it lands on top of form fields on a
+   phone. main.js hides it while a form is on screen; the form carries its own
+   WhatsApp action, so the route is never lost. */
+.wa-float.is-hidden { opacity: 0; visibility: hidden; transform: scale(0.8); pointer-events: none; transition: opacity 0.25s var(--ease), transform 0.25s var(--ease), visibility 0s linear 0.25s; }
 
 /* --------------------------------------------------------------------------
    Reveal (fallback for browsers without scroll-driven animations)
@@ -754,7 +771,7 @@ body::after {
 .room__res { flex: none; font-size: 0.9rem; color: var(--text-2); white-space: nowrap; }
 .room__res strong { font-family: var(--font-display); font-size: 1.15rem; color: var(--orange); font-variant-numeric: tabular-nums; }
 .room__del {
-  flex: none; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line-2);
+  flex: none; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line-2);
   display: grid; place-items: center; color: var(--text-2); font-size: 15px;
   transition: color 0.2s var(--ease), border-color 0.2s var(--ease), background-color 0.2s var(--ease), opacity 0.2s var(--ease);
 }
@@ -773,6 +790,8 @@ body::after {
 .rfield input:focus, .rfield select:focus { outline: none; border-color: var(--sky); box-shadow: 0 0 0 3px rgba(185, 211, 234, 0.14); }
 .rfield--checks { gap: 0.4rem; align-content: center; grid-column: span 2; }
 @media (min-width: 720px) { .rfield--checks { grid-column: auto; } }
-.rcheck { display: flex; align-items: center; gap: 0.5rem; font-size: 0.86rem; color: var(--text-2); cursor: pointer; }
-.rcheck input { width: 16px; height: 16px; flex: none; accent-color: var(--orange); cursor: pointer; }
+/* A 16px box is too small to hit with a thumb, so the whole label is the target
+   and the row is given a finger's worth of height. */
+.rcheck { display: flex; align-items: center; gap: 0.5rem; min-height: 44px; font-size: 0.86rem; color: var(--text-2); cursor: pointer; }
+.rcheck input { width: 20px; height: 20px; flex: none; accent-color: var(--orange); cursor: pointer; }
 #room-cap { margin-top: 0.8rem; max-width: 46ch; }
