@@ -632,3 +632,83 @@
 
   forms.forEach(function (f) { io.observe(f); });
 })();
+
+/* ---------------------------------------------------------------------------
+   Sector focus on the work page.
+
+   The home page's sector tiles link here with a hash. Before this, every one of
+   them landed on a page listing all six sectors, so clicking "Apartments and
+   homes" opened something showing offices, restaurants and the rest - the
+   destination never matched what was clicked. Arriving with a sector hash now
+   shows that sector on its own, with a filter row to reach the others.
+
+   The row is built here rather than in the markup, so with JavaScript off the
+   page keeps its old behaviour and shows everything.
+   --------------------------------------------------------------------------- */
+(function () {
+  var wrap = document.querySelector(".sectors");
+  if (!wrap) return;
+  var sectors = Array.prototype.slice.call(wrap.querySelectorAll(".sector"));
+  if (sectors.length < 2) return;
+
+  var bar = document.createElement("div");
+  bar.className = "sectors__filter";
+  bar.setAttribute("aria-label", "Filter by sector");
+
+  var defs = [{ id: "all", label: "All sectors" }].concat(sectors.map(function (s) {
+    return { id: s.id, label: s.dataset.short || s.querySelector("h3").textContent.trim() };
+  }));
+
+  var buttons = defs.map(function (d) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.textContent = d.label;
+    b.dataset.id = d.id;
+    b.addEventListener("click", function () { show(d.id, false, true); });
+    bar.appendChild(b);
+    return b;
+  });
+
+  function show(id, jump, writeHash) {
+    var known = id === "all" || sectors.some(function (s) { return s.id === id; });
+    if (!known) id = "all";
+    sectors.forEach(function (s) { s.hidden = id !== "all" && s.id !== id; });
+    buttons.forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.id === id)); });
+
+    // Keep the address bar honest so a filtered view can be linked to - but
+    // only once the visitor has actually chosen something. Landing on the page
+    // with no hash should not rewrite the URL under them.
+    if (writeHash && history.replaceState) {
+      history.replaceState(null, "", id === "all" ? "#sectors" : "#" + id);
+    }
+
+    if (jump) settle();
+  }
+
+  // Put the section heading just below the fixed bar, so the visitor sees the
+  // heading, the filter row and the sector they picked - not the sector alone,
+  // which reads as though the page only has one.
+  function settle() {
+    var head = document.getElementById("sectors") || wrap;
+    var nav = document.querySelector(".nav");
+    var navH = nav ? nav.getBoundingClientRect().height : 0;
+    var top = head.getBoundingClientRect().top + window.pageYOffset - navH - 24;
+    window.scrollTo({ top: Math.max(0, top) });
+  }
+
+  wrap.parentNode.insertBefore(bar, wrap);
+
+  var landed = location.hash.slice(1);
+  show(landed, false);
+  if (landed) {
+    // The browser performs its own fragment jump after the document loads, and
+    // it would land past the heading and undo the scroll above. Run last.
+    var after = function () { requestAnimationFrame(settle); };
+    if (document.readyState === "complete") after();
+    else window.addEventListener("load", after);
+  }
+
+  window.addEventListener("hashchange", function () {
+    show(location.hash.slice(1), true, false);
+  });
+})();

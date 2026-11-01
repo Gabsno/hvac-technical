@@ -95,6 +95,27 @@ https://gabsno.github.io/hvac-technical/ (repo Gabsno/hvac-technical, deploys fr
   `outdoor-unit`. They depict a *kind of space* or a bare unit, which no frame in
   the client's sets does. Replace them if the client ever sends a residential
   install and interiors of finished jobs.
+- **A sector link shows that sector, not all six.** The home page's tiles link
+  here with a hash, and every one of them used to land on a page listing all six
+  sectors — clicking "Apartments and homes" opened something showing offices,
+  restaurants and the rest, so the destination never matched what was clicked.
+  `main.js` now builds a filter row above the list and, when the page is reached
+  with a sector hash, shows that sector on its own with the matching chip
+  pressed. Choosing a chip swaps the sector and rewrites the hash through
+  `replaceState`, so a filtered view can be linked to; arriving with no hash
+  shows everything and leaves the URL alone. `hashchange` is handled, so the
+  browser's back button works through the filters.
+  The row is built in JavaScript on purpose: with scripting off, the markup is
+  untouched and all six sectors are simply readable as before.
+  Two traps in here. `.sector { display: grid }` outranks the user-agent
+  stylesheet's `[hidden] { display: none }`, so setting the attribute changed
+  nothing until `.sector[hidden] { display: none }` was added — and a test that
+  reads the `hidden` *property* will report success while the page still shows
+  everything, so check `getComputedStyle(el).display` instead. And the browser
+  performs its own fragment jump after the document loads, which lands past the
+  heading and undoes any scrolling done earlier; the scroll that puts the
+  heading and the filter row on screen has to run on `load`, inside a
+  `requestAnimationFrame`, to come last.
 - **Every sector on the work page carries its own photograph**, and the bento
   tiles that link to them do too. Before this, all six sector anchors landed on
   a short text block with the same undifferentiated gallery filling the screen

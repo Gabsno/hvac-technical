@@ -460,7 +460,21 @@ body::after {
 /* --------------------------------------------------------------------------
    Work page: sector rows + masonry gallery
    -------------------------------------------------------------------------- */
+/* Built by main.js, so without JavaScript every sector simply stays visible. */
+.sectors__filter { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.6rem; }
+.sectors__filter button {
+  font: inherit; font-size: 0.9rem; font-weight: 700; color: var(--text-2);
+  background: transparent; border: 1px solid var(--line-2); border-radius: 999px;
+  padding: 0.5rem 1rem; min-height: 44px; cursor: pointer;
+  transition: color 0.2s var(--ease), border-color 0.2s var(--ease), background-color 0.2s var(--ease);
+}
+.sectors__filter button:hover { color: var(--text); border-color: var(--sky); }
+.sectors__filter button[aria-pressed="true"] { background: var(--sky); border-color: var(--sky); color: var(--bg-0); }
+
 .sectors { display: grid; border-top: 1px solid var(--line); }
+/* `.sector { display: grid }` outranks the UA stylesheet's `[hidden]` rule, so
+   without this the filter sets the attribute and nothing actually disappears. */
+.sector[hidden] { display: none; }
 .sector { display: grid; gap: 0.6rem; padding: 1.6rem 0; border-bottom: 1px solid var(--line); scroll-margin-top: calc(var(--nav-h) + 1rem); }
 /* Heading, copy, then the sector's own photograph. Every sector anchor used to
    land on the same gallery, so each one now carries a frame of its own. */
